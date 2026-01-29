@@ -1,0 +1,19 @@
+{
+  "name": "brave-search-skills",
+  "version": "1.0.0",
+  "skills_dir": "skills",
+  "description": "Brave Search API skills for AI coding agents",
+  "author": "Brave Software",
+  "homepage": "https://api.search.brave.com",
+  "repository": "https://github.com/brave/brave-search-skills",
+  "keywords": [
+    "brave",
+    "search",
+    "api",
+    "web-search",
+    "grounding",
+    "rag",
+    "llm",
+    "ai"
+  ]
+}

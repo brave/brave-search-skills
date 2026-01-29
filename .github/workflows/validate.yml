@@ -1,0 +1,82 @@
+name: Validate Skills
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'skills/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'skills/**'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate SKILL.md format
+        run: |
+          set -e
+
+          for skill_dir in skills/*/; do
+            skill_file="${skill_dir}SKILL.md"
+            skill_name=$(basename "$skill_dir")
+
+            if [ ! -f "$skill_file" ]; then
+              echo "ERROR: Missing SKILL.md in $skill_dir"
+              exit 1
+            fi
+
+            # Check for YAML frontmatter
+            if ! head -1 "$skill_file" | grep -q "^---$"; then
+              echo "ERROR: $skill_file missing YAML frontmatter"
+              exit 1
+            fi
+
+            # Check for required fields
+            if ! grep -q "^name:" "$skill_file"; then
+              echo "ERROR: $skill_file missing 'name' field"
+              exit 1
+            fi
+
+            if ! grep -q "^description:" "$skill_file"; then
+              echo "ERROR: $skill_file missing 'description' field"
+              exit 1
+            fi
+
+            # Check frontmatter is closed
+            if [ $(grep -c "^---$" "$skill_file") -lt 2 ]; then
+              echo "ERROR: $skill_file has unclosed frontmatter"
+              exit 1
+            fi
+
+            echo "OK: $skill_name"
+          done
+
+          echo ""
+          echo "All skills validated successfully!"
+
+      - name: Check marketplace.json consistency
+        run: |
+          set -e
+
+          # Get skills from filesystem
+          fs_skills=$(ls -1 skills/ | sort)
+
+          # Get skills from marketplace.json
+          mp_skills=$(jq -r '.plugins[].name' marketplace.json | sort)
+
+          if [ "$fs_skills" != "$mp_skills" ]; then
+            echo "ERROR: marketplace.json plugins don't match skills/ directory"
+            echo ""
+            echo "In filesystem:"
+            echo "$fs_skills"
+            echo ""
+            echo "In marketplace.json:"
+            echo "$mp_skills"
+            exit 1
+          fi
+
+          echo "marketplace.json is consistent with skills/ directory"
