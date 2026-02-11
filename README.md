@@ -2,7 +2,7 @@
 
 Official skills for using [Brave Search API](https://api.search.brave.com) with AI coding agents.
 
-Works with **Claude Code**, **Cursor**, **Windsurf**, **Cline**, **Codex**, **OpenCode**, and any agent that reads AGENTS.md.
+Works with **Claude Code**, **Cursor**, **GitHub Copilot**, **Codex CLI**, **Gemini CLI**, **VS Code**, **Windsurf**, **Cline**, **Goose**, **Amp**, **Roo Code**, and [27+ other agents](https://agentskills.io) that support the Agent Skills standard.
 
 ## Prerequisites
 
@@ -26,36 +26,71 @@ export BRAVE_SEARCH_API_KEY="your-key"
 
 ## Installation
 
-### Claude Code (Native Plugin)
+All agents below support the [Agent Skills](https://agentskills.io) standard and read SKILL.md files from their skills directory.
+
+### Claude Code
 
 ```bash
-# Add marketplace
-/plugin marketplace add brave/brave-search-skills
-
-# Install specific skills
-/plugin install grounding-context web-search deep-research
-```
-
-### Cursor / Windsurf / Cline / Aider (via OpenSkills)
-
-```bash
-npm i -g openskills
-openskills install brave/brave-search-skills
-openskills sync
-```
-
-### OpenAI Codex
-
-```bash
-$skill-installer https://github.com/brave/brave-search-skills
-```
-
-### Manual
-
-```bash
+# Project-level (recommended)
 git clone https://github.com/brave/brave-search-skills
+cp -r brave-search-skills/skills/* .claude/skills/
+
+# User-level (available in all projects)
 cp -r brave-search-skills/skills/* ~/.claude/skills/
 ```
+
+### Cursor
+
+Cursor natively reads skills from `.cursor/skills/`, `.claude/skills/`, and `.codex/skills/` at both project and user level.
+
+```bash
+# Project-level
+cp -r brave-search-skills/skills/* .cursor/skills/
+
+# User-level
+cp -r brave-search-skills/skills/* ~/.cursor/skills/
+```
+
+You can also add skills via **Settings > Rules > Add Rule > Remote Rule** using the GitHub URL.
+
+### GitHub Copilot
+
+```bash
+cp -r brave-search-skills/skills/* .github/skills/
+```
+
+### Codex CLI
+
+Codex reads from `.agents/skills/` at repo, parent, root, and user levels.
+
+```bash
+# Project-level
+cp -r brave-search-skills/skills/* .agents/skills/
+
+# User-level
+cp -r brave-search-skills/skills/* ~/.agents/skills/
+```
+
+### Other Agents (Windsurf, Cline, Gemini CLI, Goose, Amp, Roo Code, etc.)
+
+All Agent Skills-compatible agents read from standard skill directories. Copy skills to the agent's skills directory or reference `AGENTS.md`.
+
+### OpenSkills (Universal Installer)
+
+```bash
+npx openskills install brave/brave-search-skills
+```
+
+### Updating
+
+Pull the latest changes and re-copy, or re-run the OpenSkills install command:
+
+```bash
+cd brave-search-skills && git pull
+# Then re-copy to your agent's skills directory
+```
+
+See the full list of compatible agents at [agentskills.io](https://agentskills.io).
 
 ## Available Skills
 

@@ -26,9 +26,4 @@ Set environment variable: `BRAVE_SEARCH_API_KEY`
 
 ## Usage
 
-To load a skill's full instructions, run:
-```
-openskills read <skill-name>
-```
-
-Or read the SKILL.md file directly from the `skills/<name>/SKILL.md` path.
+Read the SKILL.md file from `skills/<name>/SKILL.md` for full instructions on any skill.

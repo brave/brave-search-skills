@@ -1,5 +1,5 @@
 ---
-name: sapi-content
+name: content
 description: USE FOR extracting page content from URLs via Search API. Returns cleaned or raw HTML content from web pages. Supports up to 10 URLs per request. Requires BRAVE_SEARCH_API_KEY.
 ---
 
@@ -15,7 +15,7 @@ Use for **content extraction** when you need:
 - Cleaned HTML (boilerplate removed) or raw HTML
 - Text content for analysis or processing
 
-**For search + content together**, use `sapi-grounding-context` instead - it searches and returns pre-extracted relevant snippets in one call.
+**For search + content together**, use `grounding-context` instead - it searches and returns pre-extracted relevant snippets in one call.
 
 ## Quick Start (cURL)
 
@@ -122,7 +122,5 @@ URLs that fail to fetch return with an error status:
 
 ## Related Skills
 
-- `sapi-grounding-context`: Search + content in one call (recommended for AI)
-- `sapi-web-search`: Search for URLs first, then fetch content
-- `brave-dev-content-snippet`: Internal content extraction (VPN required)
-- `brave-dev-content-berserk`: Advanced extraction with tables/code (VPN required)
+- `grounding-context`: Search + content in one call (recommended for AI)
+- `web-search`: Search for URLs first, then fetch content

@@ -5,10 +5,12 @@ on:
     branches: [main]
     paths:
       - 'skills/**'
+      - '.claude-plugin/**'
   pull_request:
     branches: [main]
     paths:
       - 'skills/**'
+      - '.claude-plugin/**'
 
 jobs:
   validate:
@@ -52,6 +54,13 @@ jobs:
               exit 1
             fi
 
+            # Check that name matches directory name
+            file_name=$(grep "^name:" "$skill_file" | head -1 | sed 's/^name:[[:space:]]*//')
+            if [ "$file_name" != "$skill_name" ]; then
+              echo "ERROR: $skill_file name '$file_name' does not match directory name '$skill_name'"
+              exit 1
+            fi
+
             echo "OK: $skill_name"
           done
 
@@ -62,21 +71,26 @@ jobs:
         run: |
           set -e
 
-          # Get skills from filesystem
-          fs_skills=$(ls -1 skills/ | sort)
-
-          # Get skills from marketplace.json
-          mp_skills=$(jq -r '.plugins[].name' marketplace.json | sort)
-
-          if [ "$fs_skills" != "$mp_skills" ]; then
-            echo "ERROR: marketplace.json plugins don't match skills/ directory"
-            echo ""
-            echo "In filesystem:"
-            echo "$fs_skills"
-            echo ""
-            echo "In marketplace.json:"
-            echo "$mp_skills"
+          if [ ! -f .claude-plugin/marketplace.json ]; then
+            echo "ERROR: Missing .claude-plugin/marketplace.json"
             exit 1
           fi
 
-          echo "marketplace.json is consistent with skills/ directory"
+          # Validate JSON syntax
+          if ! jq . .claude-plugin/marketplace.json > /dev/null 2>&1; then
+            echo "ERROR: .claude-plugin/marketplace.json is not valid JSON"
+            exit 1
+          fi
+
+          # Check required fields
+          if [ "$(jq -r '.owner.name' .claude-plugin/marketplace.json)" = "null" ]; then
+            echo "ERROR: .claude-plugin/marketplace.json missing owner.name"
+            exit 1
+          fi
+
+          if [ "$(jq -r '.plugins | length' .claude-plugin/marketplace.json)" -lt 1 ]; then
+            echo "ERROR: .claude-plugin/marketplace.json has no plugins"
+            exit 1
+          fi
+
+          echo ".claude-plugin/marketplace.json is valid"

@@ -1,5 +1,5 @@
 ---
-name: sapi-spellcheck
+name: spellcheck
 description: USE BEFORE search to fix typos via Search API. Returns corrected query with confidence scores. Improves search quality by fixing common misspellings. Requires BRAVE_SEARCH_API_KEY.
 ---
 
@@ -108,6 +108,5 @@ When the query is already correct:
 
 ## Related Skills
 
-- `sapi-suggest`: Query autocomplete
-- `sapi-web-search`: Web search (has built-in spellcheck)
-- `brave-dev-spellcheck`: Internal version (VPN required)
+- `suggest`: Query autocomplete
+- `web-search`: Web search (has built-in spellcheck)

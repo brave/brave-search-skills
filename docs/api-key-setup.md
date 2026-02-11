@@ -21,34 +21,28 @@ Add to `~/.claude/settings.json`:
 }
 ```
 
-### Cursor
+### Cursor / Windsurf / Cline
 
-Add to your workspace `.cursorrules` or global settings:
-
-```
-BRAVE_SEARCH_API_KEY=your-api-key-here
-```
-
-Or set in your shell profile (`~/.bashrc`, `~/.zshrc`):
+Set in your shell profile (`~/.bashrc`, `~/.zshrc`):
 
 ```bash
 export BRAVE_SEARCH_API_KEY="your-api-key-here"
 ```
 
-### Windsurf / Cline / Aider
+### GitHub Copilot
 
-Set environment variable in your shell profile:
+Set in your shell profile (`~/.bashrc`, `~/.zshrc`):
 
 ```bash
 export BRAVE_SEARCH_API_KEY="your-api-key-here"
 ```
 
-### GitHub Codex
+### Codex CLI
 
-Add to repository secrets or your `.env` file:
+Set in your shell profile (`~/.bashrc`, `~/.zshrc`):
 
-```
-BRAVE_SEARCH_API_KEY=your-api-key-here
+```bash
+export BRAVE_SEARCH_API_KEY="your-api-key-here"
 ```
 
 ### Docker / CI/CD

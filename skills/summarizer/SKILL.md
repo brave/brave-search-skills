@@ -1,5 +1,5 @@
 ---
-name: sapi-summarizer
+name: summarizer
 description: USE FOR AI-powered search summaries via Search API. Two-step process - first web search with summary=1, then poll summarizer endpoint with returned key. Returns AI-generated answers with citations. Requires BRAVE_SEARCH_API_KEY.
 ---
 
@@ -16,8 +16,8 @@ Use for **AI-generated summaries** when you need:
 - Follow-up question suggestions
 - Entity information enrichments
 
-**For research with multiple iterations**, use `sapi-deep-research` instead.
-**For pre-extracted context**, use `sapi-grounding-context`.
+**For research with multiple iterations**, use `deep-research` instead.
+**For pre-extracted context**, use `grounding-context`.
 
 ## How It Works
 
@@ -190,7 +190,6 @@ done
 
 ## Related Skills
 
-- `sapi-grounding-context`: Pre-extracted context (faster, no polling)
-- `sapi-deep-research`: Multi-iteration research
-- `sapi-web-search`: Base search endpoint
-- `brave-dev-featured-snippets`: Internal summarizer (VPN required)
+- `grounding-context`: Pre-extracted context (faster, no polling)
+- `deep-research`: Multi-iteration research
+- `web-search`: Base search endpoint

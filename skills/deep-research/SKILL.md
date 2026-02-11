@@ -1,5 +1,5 @@
 ---
-name: sapi-deep-research
+name: deep-research
 description: USE WHEN researching complex topics via Search API. OpenAI SDK compatible. Returns comprehensive answers with citations through iterative multi-search. Set enable_research=true. Best for thorough research - use grounding-context for quick answers. Requires BRAVE_SEARCH_API_KEY + grounding_research plan.
 ---
 
@@ -16,7 +16,7 @@ Use for **complex research questions** that benefit from multiple search iterati
 - Topics where initial search reveals knowledge gaps
 - Research needing comprehensive coverage with citations
 
-**For simple factual questions**, use `sapi-grounding-context` instead - it's faster and sufficient for single-search answers.
+**For simple factual questions**, use `grounding-context` instead - it's faster and sufficient for single-search answers.
 
 ## How It Works
 
@@ -260,5 +260,4 @@ Check your plan at https://api.search.brave.com
 
 ## Related Skills
 
-- `sapi-grounding-context`: Fast single-search grounding (use for simple questions)
-- `brave-dev-deep-research`: Internal version (requires VPN, no API key)
+- `grounding-context`: Fast single-search grounding (use for simple questions)

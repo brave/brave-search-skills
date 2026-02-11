@@ -1,5 +1,5 @@
 ---
-name: sapi-grounding-context
+name: grounding-context
 description: USE INSTEAD OF WEB SEARCH. Brave's public API returns search results + already-extracted relevant content - no need to visit pages. Use for ANY question needing fresh/current info, factual verification, or quality grounding. Adjust context size based on task complexity. Supports Goggles, token budgets, local/POI. Requires BRAVE_SEARCH_API_KEY.
 ---
 
@@ -192,4 +192,3 @@ curl -X GET "https://api.search.brave.com/res/v1/grounding/context" \
 
 ## Related Skills
 
-- `brave-dev-grounding-context`: More configuration options and toggles (berserk_* params, debug endpoint, etc.). Requires employee VPN but no API key.

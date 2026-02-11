@@ -1,5 +1,5 @@
 ---
-name: sapi-suggest
+name: suggest
 description: USE FOR query autocomplete/suggestions via Search API. Fast (<100ms). Returns suggested queries as user types. Supports rich suggestions with entity info. Requires BRAVE_SEARCH_API_KEY.
 ---
 
@@ -130,6 +130,5 @@ GET https://api.search.brave.com/res/v1/suggest/search
 
 ## Related Skills
 
-- `sapi-spellcheck`: Spell correction for queries
-- `sapi-web-search`: Full search results
-- `brave-dev-suggest`: Internal version (VPN required)
+- `spellcheck`: Spell correction for queries
+- `web-search`: Full search results

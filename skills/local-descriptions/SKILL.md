@@ -1,5 +1,5 @@
 ---
-name: sapi-local-descriptions
+name: local-descriptions
 description: USE FOR getting POI text descriptions via Search API. Returns detailed business descriptions for local places. Chain after local-pois for full details. Requires BRAVE_SEARCH_API_KEY.
 ---
 
@@ -15,7 +15,7 @@ Use for **POI descriptions** when you need:
 - Additional context about local places
 - Supplementary information beyond basic POI data
 
-**Workflow**: Use with `sapi-local-pois` for complete local business information.
+**Workflow**: Use with `local-pois` for complete local business information.
 
 ## Quick Start (cURL)
 
@@ -116,6 +116,5 @@ curl -s "https://api.search.brave.com/res/v1/local/descriptions?ids=$POI_ID" \
 
 ## Related Skills
 
-- `sapi-local-pois`: Get POI details (hours, ratings, address)
-- `sapi-web-search`: Search for POIs (use `result_filter=locations`)
-- `brave-dev-local-poi`: Internal POI details (VPN required)
+- `local-pois`: Get POI details (hours, ratings, address)
+- `web-search`: Search for POIs (use `result_filter=locations`)

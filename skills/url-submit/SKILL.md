@@ -1,5 +1,5 @@
 ---
-name: sapi-url-submit
+name: url-submit
 description: USE FOR submitting URLs to Brave's index via Search API. Request crawling of new or updated pages. Returns 204 on success. Requires BRAVE_SEARCH_API_KEY.
 ---
 
@@ -140,5 +140,5 @@ fi
 
 ## Related Skills
 
-- `sapi-web-search`: Search to verify if URLs are indexed
-- `sapi-content`: Extract content from URLs
+- `web-search`: Search to verify if URLs are indexed
+- `content`: Extract content from URLs

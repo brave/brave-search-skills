@@ -1,5 +1,5 @@
 ---
-name: sapi-local-pois
+name: local-pois
 description: USE FOR getting local business/POI details via Search API. Returns full business information including ratings, hours, contact info. Pass POI IDs from web search results. Requires BRAVE_SEARCH_API_KEY.
 ---
 
@@ -15,7 +15,7 @@ Use for **local business details** when you need:
 - Business hours, ratings, contact details
 - Address and location data
 
-**Workflow**: First search with `sapi-web-search` to get POI IDs from location results, then use this endpoint to get full details.
+**Workflow**: First search with `web-search` to get POI IDs from location results, then use this endpoint to get full details.
 
 ## Quick Start (cURL)
 
@@ -141,7 +141,5 @@ curl -s "https://api.search.brave.com/res/v1/web/search?q=coffee+shops+near+me&r
 
 ## Related Skills
 
-- `sapi-local-descriptions`: Get text descriptions for POIs
-- `sapi-web-search`: Search for POIs (use `result_filter=locations`)
-- `brave-dev-local-places`: Internal local search (VPN required)
-- `brave-dev-local-poi`: Internal POI details (VPN required)
+- `local-descriptions`: Get text descriptions for POIs
+- `web-search`: Search for POIs (use `result_filter=locations`)

@@ -1,5 +1,5 @@
 ---
-name: sapi-news-search
+name: news-search
 description: USE FOR news search via Search API. Returns news articles with title, URL, description, age, thumbnail, source. Supports freshness and date range filtering. Requires BRAVE_SEARCH_API_KEY.
 ---
 
@@ -135,6 +135,5 @@ GET https://api.search.brave.com/res/v1/news/search
 
 ## Related Skills
 
-- `sapi-web-search`: General web search (includes news in results)
-- `sapi-grounding-context`: Get content with extracted text
-- `brave-dev-news-search`: Internal version (VPN required)
+- `web-search`: General web search (includes news in results)
+- `grounding-context`: Get content with extracted text

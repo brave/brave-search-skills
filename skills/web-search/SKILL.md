@@ -1,5 +1,5 @@
 ---
-name: sapi-web-search
+name: web-search
 description: USE FOR web search via Search API. Returns ranked results with snippets, URLs, thumbnails. Supports freshness filters, SafeSearch, Goggles for custom ranking, pagination. Primary search endpoint. Requires BRAVE_SEARCH_API_KEY.
 ---
 
@@ -16,7 +16,7 @@ Use for **web search queries** when you need:
 - Support for pagination, freshness filters
 - Custom ranking via Goggles
 
-**For grounded context with pre-extracted content**, use `sapi-grounding-context` instead - it returns relevant snippets without needing to visit pages.
+**For grounded context with pre-extracted content**, use `grounding-context` instead - it returns relevant snippets without needing to visit pages.
 
 ## Quick Start (cURL)
 
@@ -165,8 +165,7 @@ $site=docs.python.org,boost=3'
 
 ## Related Skills
 
-- `sapi-grounding-context`: Pre-extracted content for RAG/LLM (recommended for AI)
-- `sapi-images-search`: Image-specific search
-- `sapi-videos-search`: Video-specific search
-- `sapi-news-search`: News-specific search
-- `brave-dev-ranking-search`: Internal version (VPN required)
+- `grounding-context`: Pre-extracted content for RAG/LLM (recommended for AI)
+- `images-search`: Image-specific search
+- `videos-search`: Video-specific search
+- `news-search`: News-specific search

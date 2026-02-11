@@ -1,5 +1,5 @@
 ---
-name: sapi-videos-search
+name: videos-search
 description: USE FOR video search via Search API. Returns videos with title, URL, thumbnail, duration, view count. Supports freshness filters and SafeSearch. Requires BRAVE_SEARCH_API_KEY.
 ---
 
@@ -125,7 +125,6 @@ GET https://api.search.brave.com/res/v1/videos/search
 
 ## Related Skills
 
-- `sapi-web-search`: General web search (includes video results)
-- `sapi-images-search`: Image search
-- `sapi-news-search`: News search
-- `brave-dev-videos-search`: Internal version (VPN required)
+- `web-search`: General web search (includes video results)
+- `images-search`: Image search
+- `news-search`: News search

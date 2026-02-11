@@ -1,5 +1,5 @@
 ---
-name: sapi-images-search
+name: images-search
 description: USE FOR image search via Search API. Returns images with src URL, page URL, dimensions, alt text. Supports SafeSearch filtering. Requires BRAVE_SEARCH_API_KEY.
 ---
 
@@ -116,6 +116,5 @@ GET https://api.search.brave.com/res/v1/images/search
 
 ## Related Skills
 
-- `sapi-web-search`: General web search
-- `sapi-videos-search`: Video search
-- `brave-dev-images-search`: Internal version (VPN required)
+- `web-search`: General web search
+- `videos-search`: Video search
