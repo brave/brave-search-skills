@@ -8,9 +8,11 @@ Works with **Claude Code**, **Cursor**, **GitHub Copilot**, **Codex**, **Gemini 
 
 Get a Brave Search API key at https://api.search.brave.com
 
+> **Security tip:** Prefer agent-native config over shell profile exports. Coding agents can access environment variables — scoped configs limit exposure. See [API key setup](docs/api-key-setup.md) for all options.
+
 ### Claude Code
 
-Add to `~/.claude/settings.json` ([docs](https://docs.anthropic.com/en/docs/claude-code/settings)):
+Add to `~/.claude/settings.json` ([docs](https://code.claude.com/docs/en/settings)):
 
 ```json
 {
@@ -24,7 +26,15 @@ This makes the key available in all Claude Code sessions. For per-project use, a
 
 ### Cursor
 
-Add to your shell profile (`~/.zshrc` or `~/.bashrc`):
+**Option 1 — direnv** (directory-scoped, auto-loads/unloads):
+
+```bash
+# Install direnv (https://direnv.net), then in your project directory:
+echo 'export BRAVE_SEARCH_API_KEY="your-key"' >> .envrc
+direnv allow
+```
+
+**Option 2 — Shell profile** (`~/.zshrc` or `~/.bashrc`):
 
 ```bash
 export BRAVE_SEARCH_API_KEY="your-key"
@@ -34,17 +44,18 @@ Then restart Cursor (launch from terminal or fully quit and reopen — reloading
 
 ### Codex
 
-Add to your shell profile (`~/.zshrc` or `~/.bashrc`):
+**Option 1 — config.toml** ([docs](https://developers.openai.com/codex/config-reference)):
+
+```toml
+# ~/.codex/config.toml
+[shell_environment_policy]
+set = { BRAVE_SEARCH_API_KEY = "your-key" }
+```
+
+**Option 2 — Shell profile** (`~/.zshrc` or `~/.bashrc`):
 
 ```bash
 export BRAVE_SEARCH_API_KEY="your-key"
-```
-
-Or add to `~/.codex/config.toml` ([docs](https://developers.openai.com/codex/config-reference)):
-
-```toml
-[shell_environment_policy]
-set = { BRAVE_SEARCH_API_KEY = "your-key" }
 ```
 
 Then restart your terminal. Codex reads environment variables from the shell (CLI, app, and IDE extension).
@@ -73,11 +84,17 @@ Or add to `~/.openclaw/openclaw.json` under the skill's config:
 }
 ```
 
-You can also set the environment variable in your shell profile.
-
 ### Other agents
 
-Set the environment variable in your shell profile:
+**Option 1 — direnv** (directory-scoped, auto-loads/unloads):
+
+```bash
+# Install direnv (https://direnv.net), then in your project directory:
+echo 'export BRAVE_SEARCH_API_KEY="your-key"' >> .envrc
+direnv allow
+```
+
+**Option 2 — Shell profile** (`~/.zshrc` or `~/.bashrc`):
 
 ```bash
 export BRAVE_SEARCH_API_KEY="your-key"
@@ -89,34 +106,69 @@ All agents below support the [Agent Skills](https://agentskills.io) standard and
 
 ### Claude Code
 
-[Skills documentation](https://docs.anthropic.com/en/docs/claude-code/skills)
+[Skills documentation](https://code.claude.com/docs/en/skills)
+
+**Plugin marketplace** (auto-updates, no git needed):
+
+```
+/plugin marketplace add brave/brave-search-skills
+/plugin install brave-search-skills@brave-search
+```
+
+**curl** (no git, no marketplace):
 
 ```bash
-# Project-level (recommended)
-git clone https://github.com/brave/brave-search-skills
-cp -r brave-search-skills/skills/* .claude/skills/
-
 # User-level (available in all projects)
-cp -r brave-search-skills/skills/* ~/.claude/skills/
+mkdir -p ~/.claude/skills && curl -sL https://github.com/brave/brave-search-skills/archive/main.tar.gz | tar xz -C ~/.claude/skills --strip-components=2 brave-search-skills-main/skills
+
+# Project-level
+mkdir -p .claude/skills && curl -sL https://github.com/brave/brave-search-skills/archive/main.tar.gz | tar xz -C .claude/skills --strip-components=2 brave-search-skills-main/skills
+```
+
+**Manual** (git clone + cp):
+
+```bash
+git clone https://github.com/brave/brave-search-skills
+cp -r brave-search-skills/skills/* ~/.claude/skills/   # user-level
+cp -r brave-search-skills/skills/* .claude/skills/      # project-level
 ```
 
 ### Cursor
 
 [Skills documentation](https://cursor.com/docs/context/skills)
 
-Cursor natively reads skills from `.cursor/skills/`, `.claude/skills/`, and `.codex/skills/` at both project and user level.
+**Remote Rule** (no terminal needed):
+
+Settings → Rules → Project Rules → Add Rule → Remote Rule → paste `https://github.com/brave/brave-search-skills`
+
+**curl:**
 
 ```bash
 # Project-level
-cp -r brave-search-skills/skills/* .cursor/skills/
+mkdir -p .cursor/skills && curl -sL https://github.com/brave/brave-search-skills/archive/main.tar.gz | tar xz -C .cursor/skills --strip-components=2 brave-search-skills-main/skills
 
 # User-level
-cp -r brave-search-skills/skills/* ~/.cursor/skills/
+mkdir -p ~/.cursor/skills && curl -sL https://github.com/brave/brave-search-skills/archive/main.tar.gz | tar xz -C ~/.cursor/skills --strip-components=2 brave-search-skills-main/skills
 ```
 
-You can also import skills directly from a GitHub repo URL via **Settings > Rules > Project Rules > Add Rule > Remote Rule** — no manual copying needed.
+**Manual** (cp — requires git clone above):
+
+```bash
+cp -r brave-search-skills/skills/* .cursor/skills/      # project-level
+cp -r brave-search-skills/skills/* ~/.cursor/skills/     # user-level
+```
+
+Cursor natively reads skills from `.cursor/skills/`, `.claude/skills/`, and `.codex/skills/` at both project and user level.
 
 ### GitHub Copilot
+
+**curl:**
+
+```bash
+mkdir -p .github/skills && curl -sL https://github.com/brave/brave-search-skills/archive/main.tar.gz | tar xz -C .github/skills --strip-components=2 brave-search-skills-main/skills
+```
+
+**Manual** (cp — requires git clone above):
 
 ```bash
 cp -r brave-search-skills/skills/* .github/skills/
@@ -126,38 +178,71 @@ cp -r brave-search-skills/skills/* .github/skills/
 
 [Skills documentation](https://developers.openai.com/codex/skills)
 
-Codex reads from `.agents/skills/` at repo, parent, root, and user levels. Skills work across the CLI, desktop app, and IDE extension.
+**Skill installer** (built-in — ask Codex to install skills from `https://github.com/brave/brave-search-skills`).
+
+**curl:**
 
 ```bash
-# Project-level
-cp -r brave-search-skills/skills/* .agents/skills/
-
 # User-level
-cp -r brave-search-skills/skills/* ~/.agents/skills/
+mkdir -p ~/.agents/skills && curl -sL https://github.com/brave/brave-search-skills/archive/main.tar.gz | tar xz -C ~/.agents/skills --strip-components=2 brave-search-skills-main/skills
+
+# Project-level
+mkdir -p .agents/skills && curl -sL https://github.com/brave/brave-search-skills/archive/main.tar.gz | tar xz -C .agents/skills --strip-components=2 brave-search-skills-main/skills
 ```
+
+**Manual** (cp — requires git clone above):
+
+```bash
+cp -r brave-search-skills/skills/* ~/.agents/skills/    # user-level
+cp -r brave-search-skills/skills/* .agents/skills/       # project-level
+```
+
+Codex reads from `.agents/skills/` at repo, parent, root, and user levels. Skills work across the CLI, desktop app, and IDE extension.
 
 ### Windsurf
 
+**curl:**
+
 ```bash
 # Project-level
-cp -r brave-search-skills/skills/* .windsurf/skills/
+mkdir -p .windsurf/skills && curl -sL https://github.com/brave/brave-search-skills/archive/main.tar.gz | tar xz -C .windsurf/skills --strip-components=2 brave-search-skills-main/skills
 
 # User-level
-cp -r brave-search-skills/skills/* ~/.codeium/windsurf/skills/
+mkdir -p ~/.codeium/windsurf/skills && curl -sL https://github.com/brave/brave-search-skills/archive/main.tar.gz | tar xz -C ~/.codeium/windsurf/skills --strip-components=2 brave-search-skills-main/skills
+```
+
+**Manual** (cp — requires git clone above):
+
+```bash
+cp -r brave-search-skills/skills/* .windsurf/skills/             # project-level
+cp -r brave-search-skills/skills/* ~/.codeium/windsurf/skills/   # user-level
 ```
 
 ### OpenClaw
 
 [Skills documentation](https://docs.openclaw.ai/tools/skills)
 
+**curl:**
+
 ```bash
-# User-level (shared across all agents)
+mkdir -p ~/.openclaw/skills && curl -sL https://github.com/brave/brave-search-skills/archive/main.tar.gz | tar xz -C ~/.openclaw/skills --strip-components=2 brave-search-skills-main/skills
+```
+
+**Manual** (cp — requires git clone above):
+
+```bash
 cp -r brave-search-skills/skills/* ~/.openclaw/skills/
 ```
 
 ### Other Agents (Cline, Gemini CLI, Goose, Amp, Roo Code, etc.)
 
-Copy skills to the agent's skills directory. All agents following the [Agent Skills](https://agentskills.io) standard read SKILL.md files from their skills folder.
+**curl** (adjust the target directory for your agent):
+
+```bash
+mkdir -p <skills-dir> && curl -sL https://github.com/brave/brave-search-skills/archive/main.tar.gz | tar xz -C <skills-dir> --strip-components=2 brave-search-skills-main/skills
+```
+
+Or copy skills from a git clone to the agent's skills directory. All agents following the [Agent Skills](https://agentskills.io) standard read SKILL.md files from their skills folder.
 
 ### OpenSkills (Third-Party Universal Installer)
 
@@ -169,11 +254,14 @@ See [openskills on GitHub](https://github.com/numman-ali/openskills) for details
 
 ### Updating
 
-Pull the latest changes and re-copy to your agent's skills directory:
+**Claude Code marketplace**: updates automatically, or run `/plugin marketplace update brave-search`.
+
+**curl**: re-run the curl command above to overwrite with the latest version.
+
+**git clone**: pull the latest changes and re-copy:
 
 ```bash
 cd brave-search-skills && git pull
-# Then re-copy, e.g.:
 cp -r skills/* ~/.claude/skills/    # Claude Code
 cp -r skills/* .cursor/skills/      # Cursor
 cp -r skills/* .agents/skills/      # Codex
@@ -272,7 +360,7 @@ Learn more: https://search.brave.com/help/goggles
 - **Goggles Quickstart**: https://github.com/brave/goggles-quickstart
 - **Rate Limits**: Check your API plan at https://api.search.brave.com
 - **Agent Skills Standard**: https://agentskills.io/specification
-- **Claude Code Skills**: https://docs.anthropic.com/en/docs/claude-code/skills
+- **Claude Code Skills**: https://code.claude.com/docs/en/skills
 - **Cursor Skills**: https://cursor.com/docs/context/skills
 - **Codex Skills**: https://developers.openai.com/codex/skills
 - **OpenClaw Skills**: https://docs.openclaw.ai/tools/skills

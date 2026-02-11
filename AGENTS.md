@@ -17,7 +17,7 @@ This file enables AI agents to discover and use Brave Search API skills.
 
 Get API key: https://api.search.brave.com
 
-Set environment variable: `BRAVE_SEARCH_API_KEY`
+Set `BRAVE_SEARCH_API_KEY` — see [setup guide](docs/api-key-setup.md)
 
 ## Usage
 

@@ -9,9 +9,11 @@
 
 ## Configuration by Agent
 
+> **Security tip:** Prefer agent-native config files over shell profile exports. Coding agents can access shell environment variables and profile files — scoped config limits exposure. Options below are listed from most to least secure.
+
 ### Claude Code
 
-Add to `~/.claude/settings.json` ([docs](https://docs.anthropic.com/en/docs/claude-code/settings)):
+Add to `~/.claude/settings.json` ([docs](https://code.claude.com/docs/en/settings)):
 
 ```json
 {
@@ -25,7 +27,15 @@ For per-project use, add to `.claude/settings.local.json` (gitignored) with the 
 
 ### Cursor / Windsurf / Cline
 
-Set in your shell profile (`~/.bashrc`, `~/.zshrc`):
+**Option 1 — direnv** (directory-scoped, auto-loads/unloads):
+
+```bash
+# Install direnv (https://direnv.net), then in your project directory:
+echo 'export BRAVE_SEARCH_API_KEY="your-api-key-here"' >> .envrc
+direnv allow
+```
+
+**Option 2 — Shell profile** (`~/.bashrc`, `~/.zshrc`):
 
 ```bash
 export BRAVE_SEARCH_API_KEY="your-api-key-here"
@@ -33,7 +43,15 @@ export BRAVE_SEARCH_API_KEY="your-api-key-here"
 
 ### GitHub Copilot
 
-Set in your shell profile (`~/.bashrc`, `~/.zshrc`):
+**Option 1 — direnv** (directory-scoped, auto-loads/unloads):
+
+```bash
+# Install direnv (https://direnv.net), then in your project directory:
+echo 'export BRAVE_SEARCH_API_KEY="your-api-key-here"' >> .envrc
+direnv allow
+```
+
+**Option 2 — Shell profile** (`~/.bashrc`, `~/.zshrc`):
 
 ```bash
 export BRAVE_SEARCH_API_KEY="your-api-key-here"
@@ -41,17 +59,18 @@ export BRAVE_SEARCH_API_KEY="your-api-key-here"
 
 ### Codex CLI
 
-Set in your shell profile (`~/.bashrc`, `~/.zshrc`):
+**Option 1 — config.toml** ([docs](https://developers.openai.com/codex/config-reference)):
+
+```toml
+# ~/.codex/config.toml
+[shell_environment_policy]
+set = { BRAVE_SEARCH_API_KEY = "your-api-key-here" }
+```
+
+**Option 2 — Shell profile** (`~/.bashrc`, `~/.zshrc`):
 
 ```bash
 export BRAVE_SEARCH_API_KEY="your-api-key-here"
-```
-
-Or add to `~/.codex/config.toml` ([docs](https://developers.openai.com/codex/config-reference)):
-
-```toml
-[shell_environment_policy]
-set = { BRAVE_SEARCH_API_KEY = "your-api-key-here" }
 ```
 
 ### OpenClaw
@@ -77,8 +96,6 @@ Or add to `~/.openclaw/openclaw.json` under the skill's config:
   }
 }
 ```
-
-You can also set the environment variable in your shell profile.
 
 ### Docker / CI/CD
 
