@@ -1,17 +1,22 @@
 name: Validate Skills
 
+permissions:
+  contents: read
+  
 on:
   push:
     branches: [main]
     paths:
       - 'skills/**'
       - '.claude-plugin/**'
+      - '.github/workflows/validate.yml'
       - 'AGENTS.md'
   pull_request:
     branches: [main]
     paths:
       - 'skills/**'
       - '.claude-plugin/**'
+      - '.github/workflows/validate.yml'
       - 'AGENTS.md'
 
 jobs:
