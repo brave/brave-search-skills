@@ -1,6 +1,6 @@
 ---
 name: llm-context
-description: USE FOR RAG/LLM grounding. Returns pre-extracted web content (text, tables, code) optimized for LLMs. GET + POST. Adjust max_tokens/count for complexity. Supports Goggles, local/POI. For AI answers use answers.
+description: USE FOR RAG/LLM grounding. Returns pre-extracted web content (text, tables, code) optimized for LLMs. GET + POST. Adjust max_tokens/count based on complexity. Supports Goggles, local/POI. For AI answers use answers.
 ---
 
 # LLM Context
@@ -8,7 +8,7 @@ description: USE FOR RAG/LLM grounding. Returns pre-extracted web content (text,
 > **Requires API Key**: Get one at https://api.search.brave.com
 > **Plan**: Available in the **Search** plan. See https://api.search.brave.com/app/subscriptions for details.
 
-Brave LLM Context API delivers pre-extracted, relevance-ranked web content optimized for grounding LLM responses in real-time search results. Unlike traditional web search APIs that return links and snippets, LLM Context extracts the actual page content—text chunks, tables, code blocks, and structured data—so your LLM or AI agent can reason over it directly. Already used internally at scale to power over 22 million AI answers per day in Brave Search, benchmarks show that even open-weight models using this API's context data outperform frontier models with lower-quality grounding.
+Brave LLM Context API delivers pre-extracted, relevance-ranked web content optimized for grounding LLM responses in real-time search results. Unlike traditional web search APIs that return links and snippets, LLM Context extracts the actual page content—text chunks, tables, code blocks, and structured data—so your LLM or AI agent can reason over it directly.
 
 ## LLM Context vs AI Grounding
 
@@ -17,7 +17,7 @@ Brave LLM Context API delivers pre-extracted, relevance-ranked web content optim
 | Output | Raw extracted content for YOUR LLM | End-to-end AI answers with citations |
 | Interface | REST API (GET/POST) | OpenAI-compatible `/chat/completions` |
 | Searches | Single search per request | Multi-search (iterative research) |
-| Speed | Fast (~1-2s) | Slower (~30-180s) |
+| Speed | Fast (<1s) | Slower |
 | Plan | Search | Answers |
 | Endpoint | `/res/v1/llm/context` | `/res/v1/chat/completions` |
 | Best for | AI agents, RAG pipelines, tool calls | Chat interfaces, research mode |
@@ -32,7 +32,6 @@ POST https://api.search.brave.com/res/v1/llm/context
 **Authentication**: `X-Subscription-Token: <API_KEY>` header
 
 **Optional Headers**:
-- `Api-Version: YYYY-MM-DD` — Pin to a specific API version (default: latest)
 - `Accept-Encoding: gzip` — Enable gzip compression
 
 ## Quick Start
@@ -91,7 +90,7 @@ $site=rust-lang.org'
 
 | Parameter | Type | Default | Options | Description |
 |-----------|------|---------|---------|-------------|
-| `context_threshold_mode` | string | `balanced` | `strict`/`balanced`/`lenient`/`disabled` | Relevance threshold for including content |
+| `context_threshold_mode` | string | `balanced` | `strict`/`balanced`/`lenient` | Relevance threshold for including content |
 | `enable_local` | bool | `null` | `true`/`false`/`null` | Local recall control (see below) |
 | `goggles` | string/list | `null` | - | Goggle URL or inline definition for custom re-ranking |
 
@@ -112,7 +111,6 @@ Larger context windows provide more information but increase latency and cost (o
 | `strict` | Higher threshold — fewer but more relevant results |
 | `balanced` | Default — good balance between coverage and relevance |
 | `lenient` | Lower threshold — more results, may include less relevant content |
-| `disabled` | No threshold filtering — return all extracted content |
 
 ## Local Recall
 
@@ -169,14 +167,17 @@ Goggles let you **control which sources ground your LLM** — essential for RAG 
 
 | Use Case | Goggle Rules |
 |----------|--------------|
-| Official docs only | `$discard` + `$site=docs.python.org` |
-| Exclude user content | `$discard,site=reddit.com` + `$discard,site=stackoverflow.com` |
-| Academic sources | `$discard` + `$site=arxiv.org` + `$site=.edu` |
+| Official docs only | `$discard\n$site=docs.python.org` |
+| Exclude user content | `$discard,site=reddit.com\n$discard,site=stackoverflow.com` |
+| Academic sources | `$discard\n$site=arxiv.org\n$site=.edu` |
 | No paywalls | `$discard,site=medium.com` |
 
 ### Two Ways to Apply
 
 #### 1. Hosted Goggle (URL)
+
+Goggles need to first be registered at: https://search.brave.com/goggles/create.
+
 ```bash
 --data-urlencode "goggles=https://raw.githubusercontent.com/user/goggles/main/official-docs.goggle"
 ```
@@ -270,7 +271,7 @@ $site=rust-lang.org'
 | `grounding.generic` | array | Array of URL objects with extracted content (main grounding data) |
 | `grounding.generic[].url` | string | Source URL |
 | `grounding.generic[].title` | string | Page title |
-| `grounding.generic[].snippets` | array | Extracted text chunks relevant to the query |
+| `grounding.generic[].snippets` | array | Extracted smart chunks relevant to the query |
 | `grounding.poi` | object/null | Point of interest data (only with local recall) |
 | `grounding.poi.name` | string/null | Point of interest name |
 | `grounding.poi.url` | string/null | POI source URL |
@@ -301,16 +302,4 @@ $site=rust-lang.org'
 
 - **Token budget**: Start with defaults (`maximum_number_of_tokens=8192`, `count=20`). Reduce for simple lookups, increase for complex research.
 - **Source quality**: Use Goggles to restrict to trusted sources. Set `context_threshold_mode=strict` when precision > recall.
-- **Error handling**: Set 30s timeout. Handle empty `grounding.generic` arrays gracefully. Implement retry with exponential backoff on transient failures and HTTP 429 (rate limited).
-- **Rate limits**: Requests are subject to a 1-second sliding window rate limit. Monitor `X-RateLimit-Remaining` response headers.
 - **Performance**: Use smallest `count` and `maximum_number_of_tokens` that meet your needs. For local queries, provide location headers.
-
-## Error Responses
-
-| Status | Code | Cause |
-|--|--|--|
-| 422 | Validation Error | Missing or invalid `q` parameter |
-| 401 | SUBSCRIPTION_TOKEN_INVALID | Invalid or missing API key |
-| 403 | OPTION_NOT_IN_PLAN | LLM Context not available on your plan |
-| 429 | RATE_LIMITED | Exceeded rate limit (1-second sliding window) |
-| 429 | QUOTA_LIMITED | Monthly quota exceeded |

@@ -1,6 +1,6 @@
 ---
 name: news-search
-description: USE FOR news search. Returns news articles with title, URL, description, age, meta_url, thumbnail. Supports freshness and date range filtering, Goggles for custom ranking.
+description: USE FOR news search. Returns news articles with title, URL, description, age, thumbnail. Supports freshness and date range filtering, Goggles for custom ranking.
 ---
 
 # News Search
@@ -143,13 +143,10 @@ POST https://api.search.brave.com/res/v1/news/search
 
 ## Goggles (Custom Ranking) - Unique to Brave
 
-Goggles let you **customize which news sources appear** - essential for balanced coverage.
+Goggles let you **customize which news sources appear**.
 
 | Use Case | Goggle Rules |
 |----------|--------------|
-| Boost wire services | `$site=reuters.com,boost=2` + `$site=apnews.com,boost=2` |
-| Quality journalism only | `$discard` + `$site=bbc.com` + `$site=nytimes.com` + `$site=reuters.com` |
-| No tabloids | `$discard,site=dailymail.co.uk` + `$discard,site=thesun.co.uk` |
 | Local news focus | `$site=local-paper.com,boost=3` |
 
 ### How to Apply
@@ -179,7 +176,7 @@ $discard,site=buzzfeed.com'
 | Boost | `$boost=2` | Rank higher (1-10) |
 | Downrank | `$downrank` | Rank lower |
 | Discard | `$discard` | Remove completely |
-| Site filter | `$site=bbc.com` | Target domain |
+| Site filter | `$site=local-paper.com` | Target domain |
 
 - **Discover goggles**: https://search.brave.com/goggles/discover
 - **Syntax guide**: https://search.brave.com/help/goggles
@@ -187,7 +184,7 @@ $discard,site=buzzfeed.com'
 ## Search Operators
 
 Use search operators to refine results:
-- `site:bbc.com` - Limit to specific news site
+- `site:local-paper.com` - Limit to specific news site
 - `"exact phrase"` - Match exact phrase
 - `-exclude` - Exclude term
 
@@ -196,15 +193,13 @@ Set `operators=false` to disable operator parsing.
 ## Use Cases
 
 - **Breaking news monitoring**: Use `freshness=pd` for the most recent articles on a topic.
-- **Custom news feeds with Goggles**: Boost trusted sources (e.g. Reuters, AP) and discard tabloids — unique to Brave.
+- **Custom news feeds with Goggles**: Boost trusted sources and discard other sources — unique to Brave.
 - **Historical news research**: Use `freshness=YYYY-MM-DDtoYYYY-MM-DD` to find articles from specific time periods.
 - **Multilingual news**: Combine `country`, `search_lang`, and `ui_lang` for cross-locale results.
 - **Data pipelines**: Set `include_fetch_metadata=true` for `fetched_content_timestamp` on each result.
 
 ## Notes
 
-- **Timeout**: Recommended 30s
-- **Rate limits**: Per API plan (1-second sliding window)
 - **SafeSearch**: Defaults to `strict`
 - **Pagination**: Use `offset` (0-9) with `count`
 - **Extra snippets**: Up to 5 additional excerpts when `extra_snippets=true`

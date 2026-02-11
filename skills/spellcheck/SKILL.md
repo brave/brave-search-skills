@@ -6,7 +6,7 @@ description: USE FOR spell correction. Returns corrected query if misspelled. Mo
 # Spellcheck
 
 > **Requires API Key**: Get one at https://api.search.brave.com
-> **Plan**: Available in the **Search** plan. See https://api.search.brave.com/app/subscriptions for details.
+> **Plan**: Available in the **Spellcheck** plan. See https://api.search.brave.com/app/subscriptions for details.
 
 ## Quick Start (cURL)
 
@@ -25,9 +25,6 @@ curl -s "https://api.search.brave.com/res/v1/spellcheck/search" \
 ```http
 GET https://api.search.brave.com/res/v1/spellcheck/search
 ```
-
-**Authentication**: `X-Subscription-Token: <API_KEY>` header
-**Plan**: Search
 
 ## Parameters
 
@@ -66,10 +63,9 @@ GET https://api.search.brave.com/res/v1/spellcheck/search
 
 - **Pre-search query cleanup**: Check spelling before deciding which search endpoint to call
 - **"Did you mean?" UI**: Show users a corrected suggestion before running the search
-- **Batch query normalization**: Clean up query logs or user input in bulk
+- **Batch query normalization**: Clean up user inputs in bulk
 
 ## Notes
 
-- **Timeout**: Recommended 10s (fast endpoint)
 - **Built-in alternative**: Web Search and LLM Context have `spellcheck=true` by default — use this standalone endpoint only when you need the correction before searching
 - **Context-aware**: Corrections consider the full query context, not just individual words

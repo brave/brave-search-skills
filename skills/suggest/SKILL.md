@@ -6,7 +6,7 @@ description: USE FOR query autocomplete/suggestions. Fast (<100ms). Returns sugg
 # Suggest / Autocomplete
 
 > **Requires API Key**: Get one at https://api.search.brave.com
-> **Plan**: Available in the **Search** plan. See https://api.search.brave.com/app/subscriptions for details.
+> **Plan**: Available in the **Suggest** plan. See https://api.search.brave.com/app/subscriptions for details.
 
 ## Quick Start (cURL)
 
@@ -39,7 +39,6 @@ GET https://api.search.brave.com/res/v1/suggest/search
 **Authentication**: `X-Subscription-Token: <API_KEY>` header
 
 **Optional Headers**:
-- `Api-Version: 2023-05-01` — Pin to a specific API version
 - `Accept-Encoding: gzip` — Enable response compression
 
 ## Parameters

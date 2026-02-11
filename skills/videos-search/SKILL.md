@@ -173,8 +173,5 @@ Set `operators=false` to disable operator parsing.
 
 ## Notes
 
-- **Timeout**: Recommended 30s
-- **Rate limits**: Check your API plan (1-second sliding window)
-- **SafeSearch**: Defaults to `off` for videos
 - **Pagination**: Use `offset` (0-9) with `count` for more results
 - **Max results**: Up to 50 results per request

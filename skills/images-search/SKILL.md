@@ -126,16 +126,13 @@ GET https://api.search.brave.com/res/v1/images/search
 
 ## Use Cases
 
-- **Visual content discovery**: Build image galleries, mood boards, or visual research tools. Use `count=200` for comprehensive coverage. Prefer over `web-search` when you need image-specific metadata (dimensions, thumbnails, confidence).
+- **Visual content discovery**: Build image galleries, mood boards, or visual research tools. Use `count=200` for comprehensive coverage. Prefer over `web-search` when you need image-specific metadata (dimensions, thumbnails).
 - **Content enrichment**: Add relevant images to articles or generated content. Use `country` and `search_lang` to target your audience's locale.
 - **Safe image retrieval**: Default `safesearch=strict` ensures family-friendly results out of the box. Only two modes (off/strict) — no moderate option, unlike web/video/news search.
 - **High-volume batch retrieval**: Up to 200 images per request (vs 20 for web, 50 for videos/news). Ideal for bulk image sourcing or visual analysis pipelines.
 
 ## Notes
 
-- **Timeout**: Recommended 30s
-- **Plan**: Available on the Search plan
-- **Rate limits**: 1-second sliding window (check your plan for limits)
 - **SafeSearch**: Defaults to `strict` for images (stricter than web search)
 - **High volume**: Can return up to 200 results per request
 - **Thumbnails**: Brave-proxied for user privacy (500px width). Use `properties.url` for original full-resolution image.

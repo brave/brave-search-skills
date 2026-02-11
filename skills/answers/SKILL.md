@@ -1,6 +1,6 @@
 ---
 name: answers
-description: "USE FOR AI-grounded answers via OpenAI-compatible /chat/completions. Two modes: single-search (fast ~4.5s) or deep research (enable_research=true, thorough multi-search). Streaming/blocking. Citations. Drop-in OpenAI SDK."
+description: "USE FOR AI-grounded answers via OpenAI-compatible /chat/completions. Two modes: single-search (fast) or deep research (enable_research=true, thorough multi-search). Streaming/blocking. Citations. Drop-in OpenAI SDK."
 ---
 
 # Answers — AI Grounding
@@ -13,18 +13,17 @@ description: "USE FOR AI-grounded answers via OpenAI-compatible /chat/completion
 | Use Case | Skill | Why |
 |----------|-------|-----|
 | Quick factual answer (raw context) | `llm-context` | Single search, returns raw context for YOUR LLM |
-| Fast AI answer with citations | **`answers`** (single-search) | ~4.5s, streaming, citation/entity tags |
+| Fast AI answer with citations | **`answers`** (single-search) | streaming, citations |
 | Thorough multi-search deep research | **`answers`** (research mode) | Iterative deep research, synthesized cited answer |
-| Two-step with specialized endpoints | `summarizer` | Access to title, enrichments, followups |
 
 **This endpoint** (`/res/v1/chat/completions`) supports two modes:
-- **Single-search** (default): Fast AI-grounded answer from a single search. Supports `enable_citations` and `enable_entities`.
+- **Single-search** (default): Fast AI-grounded answer from a single search. Supports `enable_citations`.
 - **Research** (`enable_research=true`): Multi-iteration deep research with progress events and synthesized cited answer.
 
 ## Use Cases
 
 - **Chat interface integration**: Drop-in OpenAI SDK replacement with web-grounded answers. Set `base_url="https://api.search.brave.com/res/v1"`.
-- **Deep research / comprehensive topic research**: Use research mode (`enable_research=true`) for complex questions needing multi-source synthesis (e.g., "Compare approaches to nuclear fusion"). Set `research_maximum_number_of_iterations: 3-4` for thoroughness.
+- **Deep research / comprehensive topic research**: Use research mode (`enable_research=true`) for complex questions needing multi-source synthesis (e.g., "Compare approaches to nuclear fusion").
 - **OpenAI SDK drop-in**: Same SDK, same streaming format — just change `base_url` and `api_key`. Works with both sync and async clients.
 - **Cited answers**: Enable `enable_citations=true` in single-search mode for inline citation tags, or use research mode which automatically includes citations in its answer.
 
@@ -76,7 +75,7 @@ curl -X POST "https://api.search.brave.com/res/v1/chat/completions" \
 POST https://api.search.brave.com/res/v1/chat/completions
 ```
 
-**Authentication**: `X-Subscription-Token: <API_KEY>` header (or `Authorization: Bearer <API_KEY>`)
+**Authentication**: `X-Subscription-Token: <BRAVE_SEARCH_API_KEY>` header (or `Authorization: Bearer <BRAVE_SEARCH_API_KEY>`)
 
 **SDK Compatible**: Works with OpenAI SDK via `base_url="https://api.search.brave.com/res/v1"`
 
@@ -84,11 +83,10 @@ POST https://api.search.brave.com/res/v1/chat/completions
 
 | Feature | Single-Search (default) | Research (`enable_research=true`) |
 |---------|------------------------|----------------------------------|
-| Speed | ~4.5s | ~30-180s |
+| Speed | Fast | Slow |
 | Searches | 1 | Multiple (iterative) |
 | Streaming | Optional (`stream=true/false`) | **Required** (`stream=true`) |
 | Citations | `enable_citations=true` (streaming only) | Built-in (in `<answer>` tag) |
-| Entities | `enable_entities=true` (streaming only) | Not available |
 | Progress events | No | Yes (`<progress>` tags) |
 | Blocking response | Yes (`stream=false`) | No |
 
@@ -106,11 +104,7 @@ POST https://api.search.brave.com/res/v1/chat/completions
 | `safesearch` | string | No | "moderate" | Search safety level (`off`, `moderate`, `strict`) |
 | `max_completion_tokens` | int | No | null | Upper bound on completion tokens |
 | `enable_citations` | bool | No | false | Include inline citation tags (single-search streaming only) |
-| `enable_entities` | bool | No | false | Include entity info (single-search streaming only) |
-
 | `web_search_options` | object | No | null | OpenAI-compatible; `search_context_size`: `low`, `medium`, `high` |
-
-Additional OpenAI-compatible parameters accepted: `metadata`, `seed`.
 
 ### Research Parameters
 
@@ -130,9 +124,7 @@ Additional OpenAI-compatible parameters accepted: `metadata`, `seed`.
 |------------|-------|
 | `enable_research=true` requires `stream=true` | "Blocking response doesn't support 'enable_research' option" |
 | `enable_research=true` incompatible with `enable_citations=true` | "Research mode doesn't support 'enable_citations' option" |
-| `enable_research=true` incompatible with `enable_entities=true` | "Research mode doesn't support 'enable_entities' option" |
 | `enable_citations=true` requires `stream=true` | "Blocking response doesn't support 'enable_citations' option" |
-| `enable_entities=true` requires `stream=true` | "Blocking response doesn't support 'enable_entities' option" |
 
 ## OpenAI SDK Usage
 
@@ -233,9 +225,6 @@ data: [DONE]
 | Tag | Purpose |
 |-----|---------|
 | `<citation>` | Inline citation references |
-| `<enum_start>` | Signals start of entity list (when `enable_entities=true`) |
-| `<enum_item>` | Entity information as JSON (when `enable_entities=true`) |
-| `<enum_end>` | Signals end of entity list (when `enable_entities=true`) |
 | `<usage>` | JSON cost/billing data |
 
 #### Research Mode
@@ -263,4 +252,3 @@ The `<usage>` tag contains JSON-stringified cost and token data:
 - **Timeout**: Set client timeout to at least 30s for single-search, 300s (5 min) for research
 - **Single message**: The `messages` array must contain exactly 1 user message
 - **Cost monitoring**: Parse the `<usage>` tag from streaming responses to track costs
-- **Rate limits**: 2 req/sec default; check your API plan

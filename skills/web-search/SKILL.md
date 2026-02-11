@@ -43,7 +43,6 @@ POST https://api.search.brave.com/res/v1/web/search
 **Authentication**: `X-Subscription-Token: <API_KEY>` header
 
 **Optional Headers**:
-- `Api-Version: YYYY-MM-DD` — Pin to a specific API version using a date string (default: latest)
 - `Accept-Encoding: gzip` — Enable gzip compression
 
 ## When to Use Web Search
@@ -192,8 +191,7 @@ For location-aware results, add these headers:
 | `news.results[]` | array? | News articles |
 | `videos.results[]` | array? | Video results |
 | `infobox.results[]` | array? | Knowledge graph entries |
-| `locations.results[]` | array? | Local POI results (with `id` for enrichment) |
-| `locations.results[].id` | string? | Ephemeral POI ID for enrichment (expires ~8h) |
+| `locations.results[]` | array? | Local POI results |
 | `summarizer` | object? | Summary key (when `summary=true`) |
 | `rich.hint.vertical` | string? | Rich result type |
 | `rich.hint.callback_key` | string? | Callback key for rich data |
@@ -269,8 +267,6 @@ Each entry is a `ResultReference` with `type` (e.g., `"web"`, `"videos"`), `inde
 
 ## Search Operators
 
-> **Note**: Search operators are experimental and may change.
-
 | Operator | Syntax | Description |
 |--|--|--|
 | Site | `site:example.com` | Limit results to a specific domain |
@@ -293,7 +289,7 @@ Set `operators=false` to disable operator parsing.
 
 Goggles let you **completely customize search ranking** — a feature unique to Brave Search.
 
-**Benefits**: Block unwanted sites (Pinterest, SEO spam), focus on trusted sources (.edu, official docs), create custom search views. Community has 1000s of goggles at https://search.brave.com/goggles/discover
+**Benefits**: Block unwanted sites (SEO spam, etc.), focus on trusted sources (.edu, official docs), create custom search views. Community has 1000s of goggles at https://search.brave.com/goggles/discover
 
 ### Two Ways to Apply Goggles
 
@@ -320,9 +316,9 @@ For multiple inline rules in one parameter, separate with `\n` (URL-encode as `%
 
 ### Examples
 
-**Allow list**: `$discard` + `$site=docs.python.org` + `$site=developer.mozilla.org` (one rule per line)
+**Allow list**: `$discard\n$site=docs.python.org\n$site=developer.mozilla.org` (one rule per line)
 
-**Block list**: `$discard,site=pinterest.com` + `$discard,site=quora.com`
+**Block list**: `$discard,site=pinterest.com\n$discard,site=quora.com`
 
 ### Resources
 - **Discover**: https://search.brave.com/goggles/discover
@@ -463,34 +459,13 @@ GET https://api.search.brave.com/res/v1/web/rich/fetch/web3
 | `chain` | string | Yes | Blockchain chain |
 | `address` | string | Yes | Blockchain address |
 
-## Local Enrichments Workflow
-
-Web search returns POI IDs in `locations.results[].id` that you can enrich with full details:
-
-```bash
-# 1. Search with location results
-curl -s "https://api.search.brave.com/res/v1/web/search?q=coffee+shops&result_filter=locations" \
-  -H "X-Subscription-Token: ${BRAVE_SEARCH_API_KEY}" \
-  -H "X-Loc-Lat: 37.7749" \
-  -H "X-Loc-Long: -122.4194"
-
-# 2. Extract POI IDs from locations.results[].id
-# 3. Get full details with local-pois endpoint
-```
-
-> **Note**: POI `id` fields are ephemeral and expire after approximately 8 hours. Do not store them for later use.
-
 ## Use Cases
 
 - **General-purpose search integration**: Richest result set (web, news, videos, discussions, FAQ, infobox, locations) in one call. For RAG/LLM grounding, prefer `llm-context`.
-- **Structured data extraction**: Products, recipes, ratings, articles via `schemas` and typed fields on results. No other SAPI endpoint returns this.
+- **Structured data extraction**: Products, recipes, ratings, articles via `schemas` and typed fields on results.
 - **Custom search with Goggles**: Unique to Brave. Boost/discard sites with inline rules or hosted Goggles for fully customized ranking.
-- **Location-aware search**: Location headers + `result_filter=locations` for POI IDs, then enrich with `local-pois`.
 
 ## Notes
 
-- **Timeout**: Recommended 30s
-- **Rate limits**: Check your API plan (1-second sliding window)
 - **Pagination**: Use `offset` (0-9) with `count` to page through results
 - **Count**: Max 20 for web search; actual results may be less than requested
-- **Billing**: Each search request counts toward your rate limit
