@@ -182,10 +182,6 @@ Learn more: https://search.brave.com/help/goggles
 - **Goggles Quickstart**: https://github.com/brave/goggles-quickstart
 - **Rate Limits**: Check your API plan at https://api.search.brave.com
 
-## Contributing
-
-Issues and pull requests welcome at https://github.com/brave/brave-search-skills
-
 ## License
 
 MIT
