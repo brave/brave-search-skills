@@ -6,11 +6,13 @@ on:
     paths:
       - 'skills/**'
       - '.claude-plugin/**'
+      - 'AGENTS.md'
   pull_request:
     branches: [main]
     paths:
       - 'skills/**'
       - '.claude-plugin/**'
+      - 'AGENTS.md'
 
 jobs:
   validate:
@@ -94,3 +96,15 @@ jobs:
           fi
 
           echo ".claude-plugin/marketplace.json is valid"
+
+      - name: Verify AGENTS.md lists all skills
+        run: |
+          set -e
+          for skill_dir in skills/*/; do
+            skill_name=$(basename "$skill_dir")
+            if ! grep -q "name=\"$skill_name\"" AGENTS.md; then
+              echo "ERROR: AGENTS.md missing skill: $skill_name"
+              exit 1
+            fi
+          done
+          echo "All skills listed in AGENTS.md"

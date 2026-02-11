@@ -11,7 +11,7 @@
 
 ### Claude Code
 
-Add to `~/.claude/settings.json`:
+Add to `~/.claude/settings.json` ([docs](https://docs.anthropic.com/en/docs/claude-code/settings)):
 
 ```json
 {
@@ -20,6 +20,8 @@ Add to `~/.claude/settings.json`:
   }
 }
 ```
+
+For per-project use, add to `.claude/settings.local.json` (gitignored) with the same format.
 
 ### Cursor / Windsurf / Cline
 
@@ -45,6 +47,39 @@ Set in your shell profile (`~/.bashrc`, `~/.zshrc`):
 export BRAVE_SEARCH_API_KEY="your-api-key-here"
 ```
 
+Or add to `~/.codex/config.toml` ([docs](https://developers.openai.com/codex/config-reference)):
+
+```toml
+[shell_environment_policy]
+set = { BRAVE_SEARCH_API_KEY = "your-api-key-here" }
+```
+
+### OpenClaw
+
+Add to `~/.openclaw/.env` ([docs](https://docs.openclaw.ai/tools/skills)):
+
+```
+BRAVE_SEARCH_API_KEY=your-api-key-here
+```
+
+Or add to `~/.openclaw/openclaw.json` under the skill's config:
+
+```json
+{
+  "skills": {
+    "entries": {
+      "brave-search": {
+        "env": {
+          "BRAVE_SEARCH_API_KEY": "your-api-key-here"
+        }
+      }
+    }
+  }
+}
+```
+
+You can also set the environment variable in your shell profile.
+
 ### Docker / CI/CD
 
 Pass as environment variable:
@@ -63,18 +98,6 @@ services:
 ```
 
 ## API Plans
-
-Brave Search API offers different plans with varying rate limits and features:
-
-| Feature | Free | Pro | Enterprise |
-|---------|------|-----|------------|
-| Web Search | Yes | Yes | Yes |
-| Grounding Context | Yes | Yes | Yes |
-| Deep Research | No | Yes | Yes |
-| Summarizer | No | Yes | Yes |
-| Local POIs | No | Yes | Yes |
-| URL Submit | No | Yes | Yes |
-| Rate Limits | 1 req/sec | Higher | Custom |
 
 Check current plans and pricing at https://api.search.brave.com
 
