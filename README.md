@@ -4,14 +4,11 @@ Official skills for using [Brave Search API](https://api.search.brave.com) with 
 
 Works with **Claude Code**, **Cursor**, **GitHub Copilot**, **Codex**, **Gemini CLI**, **VS Code**, **Windsurf**, **OpenClaw**, **Cline**, **Goose**, **Amp**, **Roo Code**, and [many other agents](https://agentskills.io) that support the Agent Skills standard.
 
-<p align="center">
-  <a href="#prerequisites">Prerequisites</a> ·
-  <a href="#installation">Installation</a> ·
-  <a href="#available-skills">Available Skills</a> ·
-  <a href="#quick-start">Quick Start</a> ·
-  <a href="#goggles-custom-ranking">Goggles</a> ·
-  <a href="#documentation">Documentation</a>
-</p>
+<div align="center">
+
+[Prerequisites](#prerequisites) &nbsp;&middot;&nbsp; [Installation](#installation) &nbsp;&middot;&nbsp; [Available Skills](#available-skills) &nbsp;&middot;&nbsp; [Quick Start](#quick-start) &nbsp;&middot;&nbsp; [Goggles](#goggles-custom-ranking) &nbsp;&middot;&nbsp; [Documentation](#documentation)
+
+</div>
 
 ## Prerequisites
 
