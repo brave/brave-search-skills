@@ -3,7 +3,7 @@ name: videos-search
 description: USE FOR video search. Returns videos with title, URL, thumbnail, duration, view count, creator. Supports freshness filters, SafeSearch, pagination.
 ---
 
-# Video Search
+# Videos Search
 
 > **Requires API Key**: Get one at https://api.search.brave.com
 > **Plan**: Included in the **Search** plan. See https://api.search.brave.com/app/subscriptions

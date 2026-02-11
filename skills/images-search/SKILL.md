@@ -3,7 +3,7 @@ name: images-search
 description: USE FOR image search. Returns images with title, source URL, thumbnail. Supports SafeSearch filter. Up to 200 results.
 ---
 
-# Image Search
+# Images Search
 
 > **Requires API Key**: Get one at https://api.search.brave.com
 > **Plan**: Available in the **Search** plan. See https://api.search.brave.com/app/subscriptions for details.

@@ -385,6 +385,8 @@ GET https://api.search.brave.com/res/v1/web/rich/fetch/stocks
 |--|--|--|--|--|
 | `symbol` | string | Yes | - | Ticker symbol (e.g., `AAPL`) |
 | `exchange` | string | Yes | - | Primary exchange (e.g., `NASDAQ`) |
+| `time_range` | string | Yes | - | Time range for data (e.g., `1d`, `5d`, `1m`, `6m`, `1y`, `5y`) |
+| `timeseries` | string | Yes | - | Timeseries granularity |
 | `range` | string | No | `""` | Timeseries window (e.g., `1d`, `1w`, `1m`) |
 
 #### Cryptocurrency
@@ -397,6 +399,8 @@ GET https://api.search.brave.com/res/v1/web/rich/fetch/cryptocurrency
 |--|--|--|--|--|
 | `coin_id` | string | Yes | - | Coin ID (e.g., `bitcoin`) |
 | `vs_currency` | string | Yes | - | Target currency (e.g., `usd`) |
+| `intent_type` | string | Yes | - | Intent type (e.g., `crypto`) |
+| `timeseries` | string | Yes | - | Timeseries granularity |
 | `range` | string | No | `""` | Timeseries window |
 | `new_pair` | int | No | `0` | New pair flag |
 | `amount` | float | No | `1` | Amount to convert |
