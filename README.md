@@ -94,30 +94,27 @@ See the full list of compatible agents at [agentskills.io](https://agentskills.i
 
 ## Available Skills
 
-| Skill | Description | Best For |
-|-------|-------------|----------|
-| **grounding-context** | Search + pre-extracted content | LLM grounding, RAG - **recommended** |
-| **web-search** | Standard web search with snippets | General search queries |
-| **deep-research** | Multi-iteration comprehensive research | Complex research questions |
-| **images-search** | Image search with metadata | Finding images |
-| **news-search** | News articles with freshness filtering | Current events, breaking news |
-| **videos-search** | Video search with duration/views | Finding video content |
-| **summarizer** | AI-powered search summaries | Quick answers with citations |
-| **suggest** | Query autocomplete suggestions | Search UX, query expansion |
-| **spellcheck** | Spell correction before search | Query preprocessing |
-| **local-pois** | Local business/POI details | Business info, hours, ratings |
-| **local-descriptions** | POI text descriptions | Detailed business descriptions |
-| **url-submit** | Submit URLs to Brave's index | SEO, content indexing |
-| **content** | Extract page content from URLs | Content analysis |
+| Skill | Description | Endpoint | Best For |
+|-------|-------------|----------|----------|
+| **llm-context** | Pre-extracted web content for LLM grounding (GET/POST) | `/res/v1/llm/context` | RAG, AI agents — **recommended** |
+| **answers** | AI-grounded answers, OpenAI SDK compatible | `/res/v1/chat/completions` | Chat interfaces, cited answers |
+| **grounding-context** | Search + pre-extracted content (GET only) | `/res/v1/grounding/context` | LLM grounding, RAG |
+| **web-search** | Ranked web results with snippets and rich data | `/res/v1/web/search` | General search queries |
+| **deep-research** | Multi-iteration research with citations (streaming required) | `/res/v1/chat/completions` | Complex research questions |
+| **images-search** | Image search with thumbnails (up to 200 results) | `/res/v1/images/search` | Finding images |
+| **news-search** | News articles with freshness filtering | `/res/v1/news/search` | Current events, breaking news |
+| **videos-search** | Video search with duration/views/creator | `/res/v1/videos/search` | Finding video content |
+| **suggest** | Query autocomplete (<100ms response) | `/res/v1/suggest/search` | Search UX, query expansion |
+| **spellcheck** | Spell correction for query cleanup | `/res/v1/spellcheck/search` | Query preprocessing |
 
 ## Quick Start
 
-### Grounding Context (Recommended for AI)
+### LLM Context (Recommended for AI)
 
-Returns search results with pre-extracted relevant content - no need to visit pages:
+Returns search results with pre-extracted web content, optimized for LLM grounding:
 
 ```bash
-curl -X GET "https://api.search.brave.com/res/v1/grounding/context?q=latest+AI+news" \
+curl -X GET "https://api.search.brave.com/res/v1/llm/context?q=latest+AI+news" \
   -H "X-Subscription-Token: ${BRAVE_SEARCH_API_KEY}"
 ```
 
@@ -131,9 +128,24 @@ curl -s "https://api.search.brave.com/res/v1/web/search?q=python+frameworks" \
   -H "X-Subscription-Token: ${BRAVE_SEARCH_API_KEY}"
 ```
 
-### Deep Research
+### Answers (AI-Grounded)
 
-Multi-iteration research with OpenAI SDK compatibility:
+OpenAI SDK-compatible endpoint for AI-grounded answers with citations.
+
+Fast single-search (blocking):
+
+```bash
+curl -X POST "https://api.search.brave.com/res/v1/chat/completions" \
+  -H "Content-Type: application/json" \
+  -H "X-Subscription-Token: ${BRAVE_SEARCH_API_KEY}" \
+  -d '{
+    "messages": [{"role": "user", "content": "What is the capital of France?"}],
+    "model": "brave",
+    "stream": false
+  }'
+```
+
+Research mode (streaming required):
 
 ```bash
 curl -X POST "https://api.search.brave.com/res/v1/chat/completions" \
@@ -153,7 +165,7 @@ Brave's unique feature lets you filter, boost, or downrank results:
 
 ```bash
 # Focus on specific domains only
-curl "https://api.search.brave.com/res/v1/web/search" \
+curl -X GET "https://api.search.brave.com/res/v1/llm/context" \
   -H "X-Subscription-Token: ${BRAVE_SEARCH_API_KEY}" \
   -G \
   --data-urlencode "q=rust programming" \
