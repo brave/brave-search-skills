@@ -1,20 +1,12 @@
 ---
 name: videos-search
-description: USE FOR video search via Search API. Returns videos with title, URL, thumbnail, duration, view count. Supports freshness filters and SafeSearch. Requires BRAVE_SEARCH_API_KEY.
+description: USE FOR video search. Returns videos with title, URL, thumbnail, duration, view count, creator. Supports freshness filters, SafeSearch, pagination.
 ---
 
-# Video Search (Search API)
+# Video Search
 
 > **Requires API Key**: Get one at https://api.search.brave.com
-> Store in `~/.claude/settings.json`: `{"env": {"BRAVE_SEARCH_API_KEY": "your-key"}}`
-
-## When to Use This Skill
-
-Use for **video search** when you need:
-- Video URLs and thumbnails
-- Duration and view counts
-- Publisher/channel information
-- Freshness filtering for recent videos
+> **Plan**: Included in the **Search** plan. See https://api.search.brave.com/app/subscriptions
 
 ## Quick Start (cURL)
 
@@ -42,16 +34,19 @@ curl -s "https://api.search.brave.com/res/v1/videos/search" \
 
 ```http
 GET https://api.search.brave.com/res/v1/videos/search
+POST https://api.search.brave.com/res/v1/videos/search
 ```
 
 **Authentication**: `X-Subscription-Token: <API_KEY>` header
+
+**Note**: Both GET and POST methods are supported. POST is useful for long queries.
 
 ## Parameters
 
 | Parameter | Type | Default | Range | Description |
 |-----------|------|---------|-------|-------------|
 | `q` | string | **required** | 1-400 chars, max 50 words | Search query |
-| `country` | string | "US" | 2-char code | Search country |
+| `country` | string | "US" | 2-char code or "ALL" | Search country |
 | `search_lang` | string | "en" | 2+ char code | Language preference |
 | `ui_lang` | string | "en-US" | locale code | UI language |
 | `count` | int | 20 | 1-50 | Number of results |
@@ -59,6 +54,8 @@ GET https://api.search.brave.com/res/v1/videos/search
 | `safesearch` | string | "off" | off/moderate/strict | Adult content filter |
 | `freshness` | string | "" | pd/pw/pm/py or date range | Time filter |
 | `spellcheck` | bool | true | - | Auto-correct query |
+| `operators` | bool | true | - | Apply search operators |
+| `include_fetch_metadata` | bool | false | - | Include `fetched_content_timestamp` in results |
 
 ### Freshness Values
 
@@ -79,52 +76,105 @@ GET https://api.search.brave.com/res/v1/videos/search
     "original": "python tutorial",
     "spellcheck_off": false
   },
+  "extra": {
+    "might_be_offensive": false
+  },
   "results": [
     {
       "type": "video_result",
       "title": "Python Tutorial for Beginners",
-      "url": "https://www.youtube.com/watch?v=...",
+      "url": "https://www.youtube.com/watch?v=rfscVS0vtbw",
       "description": "Learn Python programming from scratch...",
-      "age": "6 months ago",
-      "page_age": "2023-07-15T00:00:00",
+      "age": "February 12, 2025",
+      "page_age": "2025-02-12T00:00:00",
+      "page_fetched": "2025-02-12T15:00:00Z",
       "thumbnail": {
         "src": "https://imgs.search.brave.com/...",
-        "width": 320,
-        "height": 180
+        "original": "https://i.ytimg.com/vi/rfscVS0vtbw/hqdefault.jpg"
       },
       "video": {
-        "duration": "3:45:00",
-        "views": "5.2M views",
+        "duration": "03:45:00",
+        "views": 1523000,
         "creator": "freeCodeCamp",
-        "publisher": "YouTube"
+        "publisher": "YouTube",
+        "requires_subscription": false,
+        "tags": ["python", "programming"],
+        "author": {
+          "name": "freeCodeCamp.org",
+          "url": "https://www.youtube.com/@freecodecamp"
+        }
       },
       "meta_url": {
         "scheme": "https",
-        "netloc": "www.youtube.com",
+        "netloc": "youtube.com",
         "hostname": "www.youtube.com",
-        "path": "/watch"
+        "favicon": "https://imgs.search.brave.com/...",
+        "path": "\u203a watch"
       }
     }
   ]
 }
 ```
 
-**Key Fields:**
-- `video.duration`: Video length (H:MM:SS format)
-- `video.views`: View count with formatting
-- `video.creator`: Channel/creator name
-- `video.publisher`: Platform (YouTube, Vimeo, etc.)
-- `thumbnail.src`: Video thumbnail URL
+## Response Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `type` | string | Always `"videos"` |
+| `query.original` | string | The original search query |
+| `query.altered` | string? | Spellcheck-corrected query (if changed) |
+| `query.cleaned` | string? | Cleaned/normalized query |
+| `query.spellcheck_off` | bool? | Whether spellcheck was disabled |
+| `query.show_strict_warning` | bool? | True if strict safesearch blocked adult results |
+| `query.search_operators` | object? | Applied search operators (`applied`, `cleaned_query`, `sites`) |
+| `extra.might_be_offensive` | bool | Whether results may contain offensive content |
+| `results[].type` | string | Always `"video_result"` |
+| `results[].url` | string | Source URL of the video |
+| `results[].title` | string | Video title |
+| `results[].description` | string? | Video description |
+| `results[].age` | string? | Human-readable age (e.g. "6 months ago") or absolute date (e.g. "February 12, 2025") |
+| `results[].page_age` | string? | Page age from source (ISO datetime) |
+| `results[].page_fetched` | string? | ISO datetime when page was last fetched (e.g. `2025-02-12T15:00:00Z`) |
+| `results[].fetched_content_timestamp` | int? | Fetch timestamp (only with `include_fetch_metadata=true`) |
+| `results[].video.duration` | string? | Time string (variable format) |
+| `results[].video.views` | int? | View count as integer |
+| `results[].video.creator` | string? | Channel/creator name |
+| `results[].video.publisher` | string? | Platform (YouTube, Vimeo, etc.) |
+| `results[].video.requires_subscription` | bool? | Whether video requires a subscription |
+| `results[].video.tags` | list[str]? | Tags relevant to the video |
+| `results[].video.author` | object? | Author profile |
+| `results[].video.author.name` | string | Author name |
+| `results[].video.author.url` | string | Author profile URL |
+| `results[].video.author.long_name` | string? | Extended author name |
+| `results[].video.author.img` | string? | Author profile image URL |
+| `results[].thumbnail.src` | string | Served thumbnail URL |
+| `results[].thumbnail.original` | string? | Original thumbnail URL |
+| `results[].meta_url.scheme` | string? | URL protocol scheme |
+| `results[].meta_url.netloc` | string? | Network location |
+| `results[].meta_url.hostname` | string? | Lowercased domain name |
+| `results[].meta_url.favicon` | string? | Favicon URL |
+| `results[].meta_url.path` | string? | URL path |
+
+## Search Operators
+
+Use search operators to refine results:
+- `site:youtube.com` - Limit to specific site
+- `"exact phrase"` - Match exact phrase
+- `-exclude` - Exclude term
+
+Set `operators=false` to disable operator parsing.
+
+## Use Cases
+
+- **Video content research**: Find tutorials, explainers, and reviews by topic. Use the `video.duration`, `video.views`, and `video.creator` metadata to filter and rank results programmatically. Prefer videos-search over web-search when you need a dedicated video index with richer metadata (duration, views, creator, tags) and up to 50 results per request.
+- **Fresh video monitoring**: Use `freshness=pd` or `freshness=pw` to track newly published video content on trending topics or specific subjects.
+- **Platform-specific search**: Use `site:youtube.com` or `site:vimeo.com` operators to target specific video platforms.
+- **Video metadata extraction**: Get view counts, durations, creator info, and tags for analytics, content curation, or recommendation systems.
 
 ## Notes
 
 - **Timeout**: Recommended 30s
-- **Rate limits**: Check your API plan
+- **Rate limits**: Check your API plan (1-second sliding window)
 - **SafeSearch**: Defaults to `off` for videos
-- **Pagination**: Use `offset` (0-9) with `count`
-
-## Related Skills
-
-- `web-search`: General web search (includes video results)
-- `images-search`: Image search
-- `news-search`: News search
+- **Pagination**: Use `offset` (0-9) with `count` for more results
+- **Max results**: Up to 50 results per request

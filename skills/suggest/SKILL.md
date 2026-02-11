@@ -1,19 +1,12 @@
 ---
 name: suggest
-description: USE FOR query autocomplete/suggestions via Search API. Fast (<100ms). Returns suggested queries as user types. Supports rich suggestions with entity info. Requires BRAVE_SEARCH_API_KEY.
+description: USE FOR query autocomplete/suggestions. Fast (<100ms). Returns suggested queries as user types. Supports rich suggestions with entity info. Typo-resilient.
 ---
 
-# Suggest / Autocomplete (Search API)
+# Suggest / Autocomplete
 
 > **Requires API Key**: Get one at https://api.search.brave.com
-> Store in `~/.claude/settings.json`: `{"env": {"BRAVE_SEARCH_API_KEY": "your-key"}}`
-
-## When to Use This Skill
-
-Use for **query autocomplete** when you need:
-- Fast suggestions as users type (<100ms)
-- Query completion hints
-- Rich suggestions with entity information (paid feature)
+> **Plan**: Available in the **Search** plan. See https://api.search.brave.com/app/subscriptions for details.
 
 ## Quick Start (cURL)
 
@@ -24,25 +17,16 @@ curl -s "https://api.search.brave.com/res/v1/suggest/search?q=how+to+" \
   -H "X-Subscription-Token: ${BRAVE_SEARCH_API_KEY}"
 ```
 
-### With Parameters
-```bash
-curl -s "https://api.search.brave.com/res/v1/suggest/search" \
-  -H "Accept: application/json" \
-  -H "X-Subscription-Token: ${BRAVE_SEARCH_API_KEY}" \
-  -G \
-  --data-urlencode "q=python" \
-  --data-urlencode "country=us" \
-  --data-urlencode "lang=en" \
-  --data-urlencode "count=10"
-```
-
-### Rich Suggestions (requires paid plan)
+### With All Parameters
 ```bash
 curl -s "https://api.search.brave.com/res/v1/suggest/search" \
   -H "Accept: application/json" \
   -H "X-Subscription-Token: ${BRAVE_SEARCH_API_KEY}" \
   -G \
   --data-urlencode "q=elon" \
+  --data-urlencode "country=US" \
+  --data-urlencode "lang=en" \
+  --data-urlencode "count=10" \
   --data-urlencode "rich=true"
 ```
 
@@ -54,81 +38,62 @@ GET https://api.search.brave.com/res/v1/suggest/search
 
 **Authentication**: `X-Subscription-Token: <API_KEY>` header
 
+**Optional Headers**:
+- `Api-Version: 2023-05-01` — Pin to a specific API version
+- `Accept-Encoding: gzip` — Enable response compression
+
 ## Parameters
 
-| Parameter | Type | Default | Range | Description |
-|-----------|------|---------|-------|-------------|
-| `q` | string | **required** | 1-400 chars, max 50 words | Partial query to complete |
-| `country` | string | "US" | 2-char code | Search country hint |
-| `lang` | string | "en" | 2+ char code | Language hint |
-| `count` | int | 5 | 1-20 | Number of suggestions |
-| `rich` | bool | false | - | Include rich entity info (paid) |
+| Parameter | Type | Required | Default | Description |
+|--|--|--|--|--|
+| `q` | string | **Yes** | — | Suggest search query (1-400 chars, max 50 words) |
+| `lang` | string | No | `en` | Language preference hint (2+ char code, e.g. `fr`, `de`, `zh-hans`) |
+| `country` | string | No | `US` | Country hint (2-char code, e.g. `GB`, `FR`, `DE`). 38 codes + `ALL` |
+| `count` | int | No | `5` | Number of suggestions (1-20). Actual results may be fewer |
+| `rich` | bool | No | `false` | Enhance with entity info (title, description, image). Paid Search plan required |
 
-## Response Format
+## Response Fields
 
-### Standard Suggestions
+| Field | Type | Description |
+|-------|------|-------------|
+| `type` | string | Always `"suggest"` |
+| `query.original` | string | The original suggest search query |
+| `results` | array | List of suggestions (may be empty) |
+| `results[].query` | string | Suggested query completion |
+| `results[].is_entity` | bool? | Whether the suggested enriched query is an entity (rich only) |
+| `results[].title` | string? | The suggested query enriched title (rich only) |
+| `results[].description` | string? | The suggested query enriched description (rich only) |
+| `results[].img` | string? | The suggested query enriched image URL (rich only) |
+
+Fields with `null` values are excluded from the response. Non-rich results contain only the `query` field.
+
+### Rich Response Example (`rich=true`)
 ```json
 {
   "type": "suggest",
-  "query": {
-    "original": "how to "
-  },
-  "results": [
-    {
-      "query": "how to learn python",
-      "is_entity": false
-    },
-    {
-      "query": "how to cook rice",
-      "is_entity": false
-    },
-    {
-      "query": "how to screenshot on mac",
-      "is_entity": false
-    }
-  ]
-}
-```
-
-### Rich Suggestions (with `rich=true`)
-```json
-{
-  "type": "suggest",
-  "query": {
-    "original": "elon"
-  },
+  "query": { "original": "elon" },
   "results": [
     {
       "query": "elon musk",
       "is_entity": true,
       "title": "Elon Musk",
       "description": "American entrepreneur and business magnate",
-      "img": "https://imgs.search.brave.com/...",
-      "url": "https://en.wikipedia.org/wiki/Elon_Musk"
+      "img": "https://imgs.search.brave.com/..."
     },
-    {
-      "query": "elon musk net worth",
-      "is_entity": false
-    }
+    { "query": "elon musk net worth", "is_entity": false }
   ]
 }
 ```
 
-**Rich Fields (when available):**
-- `is_entity`: Whether suggestion is an entity (person, place, etc.)
-- `title`: Entity title
-- `description`: Brief entity description
-- `img`: Entity image URL
-- `url`: Entity reference URL
+## Use Cases
+
+- **Search-as-you-type UI**: Real-time autocomplete dropdown. Debounce 150-300ms.
+- **Query refinement for RAG**: Expand partial/ambiguous queries before calling `web-search` or `llm-context`.
+- **Entity detection**: Use `rich=true` to detect entities with title, description, and image for preview cards.
+- **Typo-tolerant input**: Get clean suggestions from misspelled input without separate spellcheck.
 
 ## Notes
 
 - **Latency**: Designed for <100ms response times
-- **Rate limits**: Check your API plan
-- **Rich suggestions**: Requires paid autosuggest subscription
-- **Country/lang**: These are hints, not strict filters
-
-## Related Skills
-
-- `spellcheck`: Spell correction for queries
-- `web-search`: Full search results
+- **Country/lang**: Hints for suggestion relevance, not strict filters
+- **Typo handling**: Suggestions handle common typos without separate spellcheck

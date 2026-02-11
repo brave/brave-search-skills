@@ -1,20 +1,12 @@
 ---
 name: news-search
-description: USE FOR news search via Search API. Returns news articles with title, URL, description, age, thumbnail, source. Supports freshness and date range filtering. Requires BRAVE_SEARCH_API_KEY.
+description: USE FOR news search. Returns news articles with title, URL, description, age, meta_url, thumbnail. Supports freshness and date range filtering, Goggles for custom ranking.
 ---
 
-# News Search (Search API)
+# News Search
 
 > **Requires API Key**: Get one at https://api.search.brave.com
-> Store in `~/.claude/settings.json`: `{"env": {"BRAVE_SEARCH_API_KEY": "your-key"}}`
-
-## When to Use This Skill
-
-Use for **news search** when you need:
-- Recent news articles
-- Publication dates and sources
-- Freshness filtering for breaking news
-- News-specific content (not general web pages)
+> **Plan**: Available in the **Search** plan. See https://api.search.brave.com/app/subscriptions for details.
 
 ## Quick Start (cURL)
 
@@ -51,16 +43,19 @@ curl -s "https://api.search.brave.com/res/v1/news/search" \
 
 ```http
 GET https://api.search.brave.com/res/v1/news/search
+POST https://api.search.brave.com/res/v1/news/search
 ```
 
 **Authentication**: `X-Subscription-Token: <API_KEY>` header
+
+**Note**: Both GET and POST are supported. POST is useful for long queries or complex Goggles.
 
 ## Parameters
 
 | Parameter | Type | Default | Range | Description |
 |-----------|------|---------|-------|-------------|
 | `q` | string | **required** | 1-400 chars, max 50 words | Search query |
-| `country` | string | "US" | 2-char code | Search country |
+| `country` | string | "US" | 2-char code or "ALL" | Search country ("ALL" for worldwide) |
 | `search_lang` | string | "en" | 2+ char code | Language preference |
 | `ui_lang` | string | "en-US" | locale code | UI language |
 | `count` | int | 20 | 1-50 | Number of results |
@@ -68,7 +63,10 @@ GET https://api.search.brave.com/res/v1/news/search
 | `safesearch` | string | "strict" | off/moderate/strict | Adult content filter |
 | `freshness` | string | "" | pd/pw/pm/py or date range | Time filter |
 | `spellcheck` | bool | true | - | Auto-correct query |
-| `extra_snippets` | bool | null | - | Get additional excerpts |
+| `extra_snippets` | bool | null | - | Up to 5 additional excerpts per result (requires a plan that includes extra snippets) |
+| `goggles` | string or array | null | URL or inline | Custom ranking filter (requires plan with Goggles; repeat param for multiple) |
+| `operators` | bool | true | - | Apply search operators |
+| `include_fetch_metadata` | bool | false | - | Include fetch timestamps in results |
 
 ### Freshness Values
 
@@ -86,8 +84,7 @@ GET https://api.search.brave.com/res/v1/news/search
 {
   "type": "news",
   "query": {
-    "original": "artificial intelligence",
-    "spellcheck_off": false
+    "original": "artificial intelligence"
   },
   "results": [
     {
@@ -97,43 +94,117 @@ GET https://api.search.brave.com/res/v1/news/search
       "description": "Researchers have announced a major advancement in...",
       "age": "2 hours ago",
       "page_age": "2024-01-15T14:30:00",
-      "source": {
-        "name": "Tech News Daily",
-        "url": "https://news.example.com",
-        "favicon": "https://news.example.com/favicon.ico"
-      },
-      "thumbnail": {
-        "src": "https://imgs.search.brave.com/...",
-        "width": 200,
-        "height": 150
-      },
+      "page_fetched": "2024-01-15T15:00:00Z",
       "meta_url": {
         "scheme": "https",
         "netloc": "news.example.com",
         "hostname": "news.example.com",
+        "favicon": "https://imgs.search.brave.com/favicon/news.example.com",
         "path": "/ai-breakthrough"
       },
-      "extra_snippets": ["Additional context...", "More details..."]
+      "thumbnail": {
+        "src": "https://imgs.search.brave.com/..."
+      }
     }
   ]
 }
 ```
 
-**Key Fields:**
-- `age`: Human-readable time since publication
-- `page_age`: ISO timestamp of publication
-- `source.name`: Publisher/news outlet name
-- `source.favicon`: Publisher favicon URL
+## Response Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `type` | string | Always `"news"` |
+| `query.original` | string | The original search query |
+| `query.altered` | string? | Spellcheck-corrected query (if changed) |
+| `query.cleaned` | string? | Cleaned/normalized query from spellchecker |
+| `query.spellcheck_off` | bool? | Whether spellcheck was disabled |
+| `query.show_strict_warning` | bool? | True if strict safesearch blocked results |
+| `query.search_operators` | object? | Applied search operators |
+| `query.search_operators.applied` | bool | Whether operators were applied |
+| `query.search_operators.cleaned_query` | string? | Query after operator processing |
+| `query.search_operators.sites` | list[str]? | Domains from `site:` operators |
+| `results[].type` | string | Always `"news_result"` |
+| `results[].title` | string | Article title |
+| `results[].url` | string | Source URL of the article |
+| `results[].description` | string? | Article description/summary |
+| `results[].age` | string? | Human-readable age (e.g. "2 hours ago") |
+| `results[].page_age` | string? | Publication date from source (ISO datetime) |
+| `results[].page_fetched` | string? | When page was last fetched (ISO datetime) |
+| `results[].fetched_content_timestamp` | int? | Fetch timestamp (only with `include_fetch_metadata=true`) |
+| `results[].meta_url.scheme` | string? | URL protocol scheme |
+| `results[].meta_url.netloc` | string? | Network location |
+| `results[].meta_url.hostname` | string? | Lowercased domain name |
+| `results[].meta_url.favicon` | string? | Favicon URL |
+| `results[].meta_url.path` | string? | URL path |
+| `results[].thumbnail.src` | string | Served thumbnail URL |
+| `results[].thumbnail.original` | string? | Original thumbnail URL |
+| `results[].extra_snippets` | list[str]? | Up to 5 additional excerpts per result |
+
+## Goggles (Custom Ranking) - Unique to Brave
+
+Goggles let you **customize which news sources appear** - essential for balanced coverage.
+
+| Use Case | Goggle Rules |
+|----------|--------------|
+| Boost wire services | `$site=reuters.com,boost=2` + `$site=apnews.com,boost=2` |
+| Quality journalism only | `$discard` + `$site=bbc.com` + `$site=nytimes.com` + `$site=reuters.com` |
+| No tabloids | `$discard,site=dailymail.co.uk` + `$discard,site=thesun.co.uk` |
+| Local news focus | `$site=local-paper.com,boost=3` |
+
+### How to Apply
+
+**Hosted Goggle** — any HTTPS URL (GitHub raw URLs, self-hosted, or Brave-hosted):
+```bash
+--data-urlencode "goggles=https://raw.githubusercontent.com/user/goggles/main/quality-news.goggle"
+```
+
+**Inline Rules** — prefix lines with `$`:
+```bash
+--data-urlencode 'goggles=$site=reuters.com,boost=2
+$site=apnews.com,boost=2
+$discard,site=buzzfeed.com'
+```
+
+**Multiple Goggles** — pass the parameter multiple times:
+```bash
+--data-urlencode "goggles=https://example.com/goggle1.goggle" \
+--data-urlencode "goggles=https://example.com/goggle2.goggle"
+```
+
+### Syntax Reference
+
+| Action | Syntax | Effect |
+|--------|--------|--------|
+| Boost | `$boost=2` | Rank higher (1-10) |
+| Downrank | `$downrank` | Rank lower |
+| Discard | `$discard` | Remove completely |
+| Site filter | `$site=bbc.com` | Target domain |
+
+- **Discover goggles**: https://search.brave.com/goggles/discover
+- **Syntax guide**: https://search.brave.com/help/goggles
+
+## Search Operators
+
+Use search operators to refine results:
+- `site:bbc.com` - Limit to specific news site
+- `"exact phrase"` - Match exact phrase
+- `-exclude` - Exclude term
+
+Set `operators=false` to disable operator parsing.
+
+## Use Cases
+
+- **Breaking news monitoring**: Use `freshness=pd` for the most recent articles on a topic.
+- **Custom news feeds with Goggles**: Boost trusted sources (e.g. Reuters, AP) and discard tabloids — unique to Brave.
+- **Historical news research**: Use `freshness=YYYY-MM-DDtoYYYY-MM-DD` to find articles from specific time periods.
+- **Multilingual news**: Combine `country`, `search_lang`, and `ui_lang` for cross-locale results.
+- **Data pipelines**: Set `include_fetch_metadata=true` for `fetched_content_timestamp` on each result.
 
 ## Notes
 
 - **Timeout**: Recommended 30s
-- **Rate limits**: Check your API plan
-- **SafeSearch**: Defaults to `strict` for news
-- **Breaking news**: Use `freshness=pd` for latest articles
+- **Rate limits**: Per API plan (1-second sliding window)
+- **SafeSearch**: Defaults to `strict`
 - **Pagination**: Use `offset` (0-9) with `count`
-
-## Related Skills
-
-- `web-search`: General web search (includes news in results)
-- `grounding-context`: Get content with extracted text
+- **Extra snippets**: Up to 5 additional excerpts when `extra_snippets=true`
