@@ -229,7 +229,7 @@ curl -X POST "https://api.search.brave.com/res/v1/chat/completions" \
   -H "Content-Type: application/json" \
   -H "X-Subscription-Token: ${BRAVE_SEARCH_API_KEY}" \
   -d '{
-    "messages": [{"role": "user", "content": "What programming languages are trending in 2025?"}],
+    "messages": [{"role": "user", "content": "What programming languages are trending in 2026?"}],
     "model": "brave",
     "stream": false
   }'
@@ -242,7 +242,7 @@ curl -X POST "https://api.search.brave.com/res/v1/chat/completions" \
   -H "Content-Type: application/json" \
   -H "X-Subscription-Token: ${BRAVE_SEARCH_API_KEY}" \
   -d '{
-    "messages": [{"role": "user", "content": "How are developers building AI-powered search applications in 2025?"}],
+    "messages": [{"role": "user", "content": "How are developers building AI-powered search applications in 2026?"}],
     "model": "brave",
     "stream": true,
     "enable_research": true
