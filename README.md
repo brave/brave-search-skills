@@ -114,7 +114,7 @@ See the full list of compatible agents at [agentskills.io](https://agentskills.i
 Returns search results with pre-extracted web content, optimized for LLM grounding:
 
 ```bash
-curl -X GET "https://api.search.brave.com/res/v1/llm/context?q=latest+AI+news" \
+curl -X GET "https://api.search.brave.com/res/v1/llm/context?q=search+API+for+grounding+LLMs" \
   -H "X-Subscription-Token: ${BRAVE_SEARCH_API_KEY}"
 ```
 
@@ -123,7 +123,7 @@ curl -X GET "https://api.search.brave.com/res/v1/llm/context?q=latest+AI+news" \
 Standard search with snippets, URLs, and metadata:
 
 ```bash
-curl -s "https://api.search.brave.com/res/v1/web/search?q=python+frameworks" \
+curl -s "https://api.search.brave.com/res/v1/web/search?q=retrieval+augmented+generation+explained" \
   -H "Accept: application/json" \
   -H "X-Subscription-Token: ${BRAVE_SEARCH_API_KEY}"
 ```
@@ -139,7 +139,7 @@ curl -X POST "https://api.search.brave.com/res/v1/chat/completions" \
   -H "Content-Type: application/json" \
   -H "X-Subscription-Token: ${BRAVE_SEARCH_API_KEY}" \
   -d '{
-    "messages": [{"role": "user", "content": "What is the capital of France?"}],
+    "messages": [{"role": "user", "content": "What programming languages are trending in 2025?"}],
     "model": "brave",
     "stream": false
   }'
@@ -152,7 +152,7 @@ curl -X POST "https://api.search.brave.com/res/v1/chat/completions" \
   -H "Content-Type: application/json" \
   -H "X-Subscription-Token: ${BRAVE_SEARCH_API_KEY}" \
   -d '{
-    "messages": [{"role": "user", "content": "What are recent breakthroughs in fusion energy?"}],
+    "messages": [{"role": "user", "content": "How are developers building AI-powered search applications in 2025?"}],
     "model": "brave",
     "stream": true,
     "enable_research": true
