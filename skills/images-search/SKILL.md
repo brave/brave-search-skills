@@ -66,7 +66,7 @@ GET https://api.search.brave.com/res/v1/images/search
       "title": "Beautiful Mountain Landscape",
       "url": "https://example.com/mountain-photo",
       "source": "example.com",
-      "page_fetched": "2024-01-15T10:30:00Z",
+      "page_fetched": "2025-09-15T10:30:00Z",
       "thumbnail": {
         "src": "https://imgs.search.brave.com/...",
         "width": 200,

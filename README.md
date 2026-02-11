@@ -2,7 +2,7 @@
 
 Official skills for using [Brave Search API](https://api.search.brave.com) with AI coding agents.
 
-Works with **Claude Code**, **Cursor**, **GitHub Copilot**, **Codex**, **Gemini CLI**, **VS Code**, **Windsurf**, **OpenClaw**, **Cline**, **Goose**, **Amp**, **Roo Code**, and [27+ other agents](https://agentskills.io) that support the Agent Skills standard.
+Works with **Claude Code**, **Cursor**, **GitHub Copilot**, **Codex**, **Gemini CLI**, **VS Code**, **Windsurf**, **OpenClaw**, **Cline**, **Goose**, **Amp**, **Roo Code**, and [many other agents](https://agentskills.io) that support the Agent Skills standard.
 
 ## Prerequisites
 

@@ -226,7 +226,7 @@ $site=rust-lang.org'
     "https://example.com/page": {
       "title": "Page Title",
       "hostname": "example.com",
-      "age": ["Monday, January 15, 2024", "2024-01-15", "380 days ago"]
+      "age": ["Wednesday, January 15, 2025", "2025-01-15", "392 days ago"]
     }
   }
 }

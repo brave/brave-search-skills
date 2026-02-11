@@ -36,7 +36,7 @@ curl -s "https://api.search.brave.com/res/v1/news/search" \
   -H "X-Subscription-Token: ${BRAVE_SEARCH_API_KEY}" \
   -G \
   --data-urlencode "q=climate summit" \
-  --data-urlencode "freshness=2024-01-01to2024-01-31"
+  --data-urlencode "freshness=2026-01-01to2026-01-31"
 ```
 
 ## Endpoint
@@ -93,8 +93,8 @@ POST https://api.search.brave.com/res/v1/news/search
       "url": "https://news.example.com/ai-breakthrough",
       "description": "Researchers have announced a major advancement in...",
       "age": "2 hours ago",
-      "page_age": "2024-01-15T14:30:00",
-      "page_fetched": "2024-01-15T15:00:00Z",
+      "page_age": "2026-01-15T14:30:00",
+      "page_fetched": "2026-01-15T15:00:00Z",
       "meta_url": {
         "scheme": "https",
         "netloc": "news.example.com",

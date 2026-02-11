@@ -25,6 +25,10 @@ Thumbs.db
 *.log
 npm-debug.log*
 
+# Claude Code
+.claude/settings.json
+.claude/settings.local.json
+
 # Testing
 coverage/
 .nyc_output/
