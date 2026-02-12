@@ -1,0 +1,24 @@
+{
+  "name": "brave-search",
+  "owner": {
+    "name": "Brave Software"
+  },
+  "plugins": [
+    {
+      "name": "brave-search-skills",
+      "source": ".",
+      "description": "Official Brave Search API skills for AI coding agents",
+      "strict": false,
+      "skills": [
+        "./skills/answers",
+        "./skills/images-search",
+        "./skills/llm-context",
+        "./skills/news-search",
+        "./skills/spellcheck",
+        "./skills/suggest",
+        "./skills/videos-search",
+        "./skills/web-search"
+      ]
+    }
+  ]
+}

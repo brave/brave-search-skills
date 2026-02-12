@@ -1,0 +1,115 @@
+name: Validate Skills
+
+permissions:
+  contents: read
+  
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'skills/**'
+      - '.claude-plugin/**'
+      - '.github/workflows/validate.yml'
+      - 'AGENTS.md'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'skills/**'
+      - '.claude-plugin/**'
+      - '.github/workflows/validate.yml'
+      - 'AGENTS.md'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate SKILL.md format
+        run: |
+          set -e
+
+          for skill_dir in skills/*/; do
+            skill_file="${skill_dir}SKILL.md"
+            skill_name=$(basename "$skill_dir")
+
+            if [ ! -f "$skill_file" ]; then
+              echo "ERROR: Missing SKILL.md in $skill_dir"
+              exit 1
+            fi
+
+            # Check for YAML frontmatter
+            if ! head -1 "$skill_file" | grep -q "^---$"; then
+              echo "ERROR: $skill_file missing YAML frontmatter"
+              exit 1
+            fi
+
+            # Check for required fields
+            if ! grep -q "^name:" "$skill_file"; then
+              echo "ERROR: $skill_file missing 'name' field"
+              exit 1
+            fi
+
+            if ! grep -q "^description:" "$skill_file"; then
+              echo "ERROR: $skill_file missing 'description' field"
+              exit 1
+            fi
+
+            # Check frontmatter is closed
+            if [ $(grep -c "^---$" "$skill_file") -lt 2 ]; then
+              echo "ERROR: $skill_file has unclosed frontmatter"
+              exit 1
+            fi
+
+            # Check that name matches directory name
+            file_name=$(grep "^name:" "$skill_file" | head -1 | sed 's/^name:[[:space:]]*//')
+            if [ "$file_name" != "$skill_name" ]; then
+              echo "ERROR: $skill_file name '$file_name' does not match directory name '$skill_name'"
+              exit 1
+            fi
+
+            echo "OK: $skill_name"
+          done
+
+          echo ""
+          echo "All skills validated successfully!"
+
+      - name: Check marketplace.json consistency
+        run: |
+          set -e
+
+          if [ ! -f .claude-plugin/marketplace.json ]; then
+            echo "ERROR: Missing .claude-plugin/marketplace.json"
+            exit 1
+          fi
+
+          # Validate JSON syntax
+          if ! jq . .claude-plugin/marketplace.json > /dev/null 2>&1; then
+            echo "ERROR: .claude-plugin/marketplace.json is not valid JSON"
+            exit 1
+          fi
+
+          # Check required fields
+          if [ "$(jq -r '.owner.name' .claude-plugin/marketplace.json)" = "null" ]; then
+            echo "ERROR: .claude-plugin/marketplace.json missing owner.name"
+            exit 1
+          fi
+
+          if [ "$(jq -r '.plugins | length' .claude-plugin/marketplace.json)" -lt 1 ]; then
+            echo "ERROR: .claude-plugin/marketplace.json has no plugins"
+            exit 1
+          fi
+
+          echo ".claude-plugin/marketplace.json is valid"
+
+      - name: Verify AGENTS.md lists all skills
+        run: |
+          set -e
+          for skill_dir in skills/*/; do
+            skill_name=$(basename "$skill_dir")
+            if ! grep -q "name=\"$skill_name\"" AGENTS.md; then
+              echo "ERROR: AGENTS.md missing skill: $skill_name"
+              exit 1
+            fi
+          done
+          echo "All skills listed in AGENTS.md"
