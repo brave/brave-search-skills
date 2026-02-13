@@ -7,7 +7,7 @@ description: USE FOR RAG/LLM grounding. Returns pre-extracted web content (text,
 
 > **Requires API Key**: Get one at https://api.search.brave.com
 >
-> **Plan**: Included in the **Search** plan. See https://api.search.brave.com/app/subscriptions
+> **Plan**: Included in the **Search** plan. See https://api-dashboard.search.brave.com/app/subscriptions/subscribe
 
 Brave LLM Context API delivers pre-extracted, relevance-ranked web content optimized for grounding LLM responses in real-time search results. Unlike traditional web search APIs that return links and snippets, LLM Context extracts the actual page content—text chunks, tables, code blocks, and structured data—so your LLM or AI agent can reason over it directly.
 

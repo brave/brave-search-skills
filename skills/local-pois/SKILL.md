@@ -7,7 +7,7 @@ description: USE FOR getting local business/POI details. Requires POI IDs obtain
 
 > **Requires API Key**: Get one at https://api.search.brave.com
 >
-> **Plan**: Included in the **Search** plan. See https://api.search.brave.com/app/subscriptions
+> **Plan**: Included in the **Search** plan. See https://api-dashboard.search.brave.com/app/subscriptions/subscribe
 >
 > **Two-step flow**: This endpoint requires POI IDs from a prior web search.
 >

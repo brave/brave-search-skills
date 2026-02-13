@@ -7,7 +7,7 @@ description: USE FOR query autocomplete/suggestions. Fast (<100ms). Returns sugg
 
 > **Requires API Key**: Get one at https://api.search.brave.com
 >
-> **Plan**: Included in the **Suggest** plan. See https://api.search.brave.com/app/subscriptions
+> **Plan**: Included in the **Suggest** plan. See https://api-dashboard.search.brave.com/app/subscriptions/subscribe
 
 ## Quick Start (cURL)
 
