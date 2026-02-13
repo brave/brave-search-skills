@@ -7,7 +7,7 @@ description: "USE FOR AI-grounded answers via OpenAI-compatible /chat/completion
 
 > **Requires API Key**: Get one at https://api.search.brave.com
 >
-> **Plan**: Included in the **Answers** plan. See https://api.search.brave.com/app/subscriptions
+> **Plan**: Included in the **Answers** plan. See https://api-dashboard.search.brave.com/app/subscriptions/subscribe
 
 ## When to Use
 

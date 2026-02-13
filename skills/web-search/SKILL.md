@@ -7,7 +7,7 @@ description: USE FOR web search. Returns ranked results with snippets, URLs, thu
 
 > **Requires API Key**: Get one at https://api.search.brave.com
 >
-> **Plan**: Included in the **Search** plan. See https://api.search.brave.com/app/subscriptions
+> **Plan**: Included in the **Search** plan. See https://api-dashboard.search.brave.com/app/subscriptions/subscribe
 
 ## Quick Start (cURL)
 

@@ -7,7 +7,7 @@ description: USE FOR spell correction. Returns corrected query if misspelled. Mo
 
 > **Requires API Key**: Get one at https://api.search.brave.com
 >
-> **Plan**: Included in the **Spellcheck** plan. See https://api.search.brave.com/app/subscriptions
+> **Plan**: Included in the **Spellcheck** plan. See https://api-dashboard.search.brave.com/app/subscriptions/subscribe
 
 ## Quick Start (cURL)
 
