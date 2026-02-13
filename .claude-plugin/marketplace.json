@@ -6,13 +6,15 @@
   "plugins": [
     {
       "name": "brave-search-skills",
-      "source": ".",
+      "source": "./",
       "description": "Official Brave Search API skills for AI coding agents",
       "strict": false,
       "skills": [
         "./skills/answers",
         "./skills/images-search",
         "./skills/llm-context",
+        "./skills/local-descriptions",
+        "./skills/local-pois",
         "./skills/news-search",
         "./skills/spellcheck",
         "./skills/suggest",
