@@ -100,6 +100,21 @@ jobs:
             exit 1
           fi
 
+          # Validate source fields start with ./
+          if jq -r '.plugins[].source' .claude-plugin/marketplace.json | grep -qv '^\./'; then
+            echo "ERROR: all plugin source fields must start with ./"
+            exit 1
+          fi
+
+          # Verify every skills/*/ directory is listed in marketplace.json
+          for skill_dir in skills/*/; do
+            skill_path="./${skill_dir%/}"
+            if ! jq -r '.plugins[].skills[]' .claude-plugin/marketplace.json | grep -qxF "$skill_path"; then
+              echo "ERROR: marketplace.json missing skill: $skill_path"
+              exit 1
+            fi
+          done
+
           echo ".claude-plugin/marketplace.json is valid"
 
       - name: Verify AGENTS.md lists all skills
