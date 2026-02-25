@@ -13,6 +13,7 @@ This file enables AI agents to discover and use Brave Search API skills.
   <skill name="suggest" description="USE FOR query autocomplete/suggestions. Fast (&lt;100ms). Returns suggested queries as user types. Supports rich suggestions with entity info. Typo-resilient." />
   <skill name="videos-search" description="USE FOR video search. Returns videos with title, URL, thumbnail, duration, view count, creator. Supports freshness filters, SafeSearch, pagination." />
   <skill name="web-search" description="USE FOR web search. Returns ranked results with snippets, URLs, thumbnails. Supports freshness filters, SafeSearch, Goggles for custom ranking, pagination. Primary search endpoint." />
+  <skill name="place-search" description="USE FOR searching places/POIs by query and location. Returns businesses with ratings, hours, contact, address, coordinates. Accepts coordinates or location string. Up to 50 results. Single-step — no prior web search needed." />
 </available-skills>
 
 ## Setup

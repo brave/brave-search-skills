@@ -19,7 +19,8 @@
         "./skills/spellcheck",
         "./skills/suggest",
         "./skills/videos-search",
-        "./skills/web-search"
+        "./skills/web-search",
+        "./skills/place-search"
       ]
     }
   ]
