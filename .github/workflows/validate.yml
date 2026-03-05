@@ -7,14 +7,14 @@ on:
   push:
     branches: [main]
     paths:
-      - 'skills/**'
+      - 'brave-search/**'
       - '.claude-plugin/**'
       - '.github/workflows/validate.yml'
       - 'AGENTS.md'
   pull_request:
     branches: [main]
     paths:
-      - 'skills/**'
+      - 'brave-search/**'
       - '.claude-plugin/**'
       - '.github/workflows/validate.yml'
       - 'AGENTS.md'
@@ -29,50 +29,75 @@ jobs:
         run: |
           set -e
 
-          for skill_dir in skills/*/; do
-            skill_file="${skill_dir}SKILL.md"
-            skill_name=$(basename "$skill_dir")
+          skill_file="brave-search/SKILL.md"
 
-            if [ ! -f "$skill_file" ]; then
-              echo "ERROR: Missing SKILL.md in $skill_dir"
+          if [ ! -f "$skill_file" ]; then
+            echo "ERROR: Missing $skill_file"
+            exit 1
+          fi
+
+          # Check for YAML frontmatter
+          if ! head -1 "$skill_file" | grep -q "^---$"; then
+            echo "ERROR: $skill_file missing YAML frontmatter"
+            exit 1
+          fi
+
+          # Check for required fields
+          if ! grep -q "^name:" "$skill_file"; then
+            echo "ERROR: $skill_file missing 'name' field"
+            exit 1
+          fi
+
+          if ! grep -q "^description:" "$skill_file"; then
+            echo "ERROR: $skill_file missing 'description' field"
+            exit 1
+          fi
+
+          # Check frontmatter is closed
+          if [ $(grep -c "^---$" "$skill_file") -lt 2 ]; then
+            echo "ERROR: $skill_file has unclosed frontmatter"
+            exit 1
+          fi
+
+          # Check that name matches directory name
+          file_name=$(grep "^name:" "$skill_file" | head -1 | sed 's/^name:[[:space:]]*//')
+          if [ "$file_name" != "brave-search" ]; then
+            echo "ERROR: $skill_file name '$file_name' does not match directory name 'brave-search'"
+            exit 1
+          fi
+
+          echo "OK: brave-search"
+          echo ""
+          echo "Skill validated successfully!"
+
+      - name: Validate reference files exist
+        run: |
+          set -e
+
+          expected_refs=(
+            "brave-search/references/api-key-setup.md"
+            "brave-search/references/web-search.md"
+            "brave-search/references/llm-context.md"
+            "brave-search/references/answers.md"
+            "brave-search/references/images-search.md"
+            "brave-search/references/news-search.md"
+            "brave-search/references/videos-search.md"
+            "brave-search/references/local-pois.md"
+            "brave-search/references/local-descriptions.md"
+            "brave-search/references/suggest.md"
+            "brave-search/references/spellcheck.md"
+          )
+
+          for ref in "${expected_refs[@]}"; do
+            if [ ! -f "$ref" ]; then
+              echo "ERROR: Missing reference file: $ref"
               exit 1
             fi
-
-            # Check for YAML frontmatter
-            if ! head -1 "$skill_file" | grep -q "^---$"; then
-              echo "ERROR: $skill_file missing YAML frontmatter"
-              exit 1
-            fi
-
-            # Check for required fields
-            if ! grep -q "^name:" "$skill_file"; then
-              echo "ERROR: $skill_file missing 'name' field"
-              exit 1
-            fi
-
-            if ! grep -q "^description:" "$skill_file"; then
-              echo "ERROR: $skill_file missing 'description' field"
-              exit 1
-            fi
-
-            # Check frontmatter is closed
-            if [ $(grep -c "^---$" "$skill_file") -lt 2 ]; then
-              echo "ERROR: $skill_file has unclosed frontmatter"
-              exit 1
-            fi
-
-            # Check that name matches directory name
-            file_name=$(grep "^name:" "$skill_file" | head -1 | sed 's/^name:[[:space:]]*//')
-            if [ "$file_name" != "$skill_name" ]; then
-              echo "ERROR: $skill_file name '$file_name' does not match directory name '$skill_name'"
-              exit 1
-            fi
-
-            echo "OK: $skill_name"
+            echo "OK: $ref"
           done
 
           echo ""
-          echo "All skills validated successfully!"
+          echo "All reference files present!"
 
       - name: Check marketplace.json consistency
         run: |
@@ -106,25 +131,19 @@ jobs:
             exit 1
           fi
 
-          # Verify every skills/*/ directory is listed in marketplace.json
-          for skill_dir in skills/*/; do
-            skill_path="./${skill_dir%/}"
-            if ! jq -r '.plugins[].skills[]' .claude-plugin/marketplace.json | grep -qxF "$skill_path"; then
-              echo "ERROR: marketplace.json missing skill: $skill_path"
-              exit 1
-            fi
-          done
+          # Verify brave-search skill is listed
+          if ! jq -r '.plugins[].skills[]' .claude-plugin/marketplace.json | grep -qxF "./brave-search"; then
+            echo "ERROR: marketplace.json missing skill: ./brave-search"
+            exit 1
+          fi
 
           echo ".claude-plugin/marketplace.json is valid"
 
-      - name: Verify AGENTS.md lists all skills
+      - name: Verify AGENTS.md lists skill
         run: |
           set -e
-          for skill_dir in skills/*/; do
-            skill_name=$(basename "$skill_dir")
-            if ! grep -q "name=\"$skill_name\"" AGENTS.md; then
-              echo "ERROR: AGENTS.md missing skill: $skill_name"
-              exit 1
-            fi
-          done
-          echo "All skills listed in AGENTS.md"
+          if ! grep -q 'name="brave-search"' AGENTS.md; then
+            echo "ERROR: AGENTS.md missing skill: brave-search"
+            exit 1
+          fi
+          echo "Skill listed in AGENTS.md"
