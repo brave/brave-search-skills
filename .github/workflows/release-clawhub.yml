@@ -1,0 +1,84 @@
+name: Release bx-search to ClawHub
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Semver to publish (leave empty to use version from clawhub/bx-search/SKILL.md)"
+        required: false
+        type: string
+
+jobs:
+  publish-bx-search:
+    runs-on: ubuntu-latest
+    env:
+      CLAWHUB_TOKEN: ${{ secrets.CLAWHUB_TOKEN }}
+      PACKAGE_PATH: clawhub/bx-search
+      SKILL_FILE: clawhub/bx-search/SKILL.md
+      INPUT_VERSION: ${{ github.event.inputs.version }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # semver: 4.3.1
+
+      - name: Verify token is configured
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -z "${CLAWHUB_TOKEN}" ]]; then
+            echo "Missing CLAWHUB_TOKEN secret"
+            exit 1
+          fi
+
+      - name: Setup Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # semver: 4.4.0
+        with:
+          node-version: "20.20.1" # semver: 20.20.1
+
+      - name: Install ClawHub CLI
+        run: npm install --global clawhub@0.8.0 # semver: 0.8.0
+
+      - name: Resolve release version
+        id: version
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ -n "${INPUT_VERSION}" ]]; then
+            version="${INPUT_VERSION}"
+            source="workflow input"
+          else
+            version="$(awk -F': ' '/^version:/ {print $2; exit}' "${SKILL_FILE}")"
+            source="${SKILL_FILE}"
+          fi
+
+          if [[ -z "${version}" ]]; then
+            echo "Failed to resolve version from input or ${SKILL_FILE}"
+            exit 1
+          fi
+
+          if [[ ! "${version}" =~ ^[0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z.-]+)?$ ]]; then
+            echo "Version '${version}' is not a valid semver-like value"
+            exit 1
+          fi
+
+          echo "Using version '${version}' from ${source}"
+          echo "version=${version}" >> "${GITHUB_OUTPUT}"
+
+      - name: Show package contents to publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Publishing full directory: ${PACKAGE_PATH}"
+          test -f "${SKILL_FILE}"
+          find "${PACKAGE_PATH}" -type f | sort
+
+      - name: Authenticate with ClawHub
+        run: clawhub login --token "${CLAWHUB_TOKEN}" --no-input
+
+      - name: Publish bx-search skill
+        env:
+          PUBLISH_VERSION: ${{ steps.version.outputs.version }}
+        run: clawhub publish "${PACKAGE_PATH}" --version "${PUBLISH_VERSION}" --name "Brave Search CLI (bx)" --no-input
