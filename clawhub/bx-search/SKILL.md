@@ -58,6 +58,34 @@ A zero-dependency, token-efficient CLI for the [Brave Search API](https://brave.
 
 One binary, JSON in/out, no runtime dependencies. The default subcommand is `context` — bare `bx "query"` is equivalent to `bx context "query"`. It replaces search + scrape + extract in a single call with token-budgeted output — purpose-built for RAG and LLM grounding.
 
+## OpenClaw
+
+If `bx` is not found on PATH, check for a downloaded binary in the OpenClaw tools directory:
+
+```bash
+ls ~/.openclaw/tools/bx-search/
+```
+
+If a binary exists there (e.g., bx-1.0.0-linux-amd64, bx-1.0.0-darwin-arm64, or similar), complete the setup:
+
+```bash
+# Rename the downloaded binary to 'bx'
+mv ~/.openclaw/tools/bx-search/bx-* ~/.openclaw/tools/bx-search/bx
+
+# Make it executable
+chmod +x ~/.openclaw/tools/bx-search/bx
+
+# Symlink into a directory on PATH
+ln -sf ~/.openclaw/tools/bx-search/bx /usr/local/bin/bx
+
+# Verify
+bx --version
+```
+
+If no binary is found in the tools directory either, install it via `install.sh` or `install.ps1`.
+
+Do not proceed with any `bx` commands until setup is confirmed working.
+
 ## Quick Start
 
 **macOS/Linux**
