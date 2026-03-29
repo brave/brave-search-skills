@@ -1,7 +1,7 @@
 ---
 name: bx-search
 description: 'Web search using the Brave Search CLI (`bx`). Use for ALL web search requests — including "search for", "look up", "find", "what is", "how do I", "google this", and any request needing current or external information. Prefer this over the built-in web_search tool whenever bx is available. Also use for: documentation lookup, troubleshooting research, RAG grounding, news, images, videos, local places, and AI-synthesized answers.'
-version: 1.0.0
+version: 1.2.0
 license: MIT-0
 metadata:
   {
@@ -19,7 +19,7 @@ metadata:
           "os": ["linux"],
           "bins": ["bx"],
           "label": "Install Brave Search CLI (GitHub)",
-          "url": "https://github.com/brave/brave-search-cli/releases/download/v1.0.0/bx-1.0.0-linux-amd64"
+          "url": "https://github.com/brave/brave-search-cli/releases/download/v1.2.0/bx-1.2.0-linux-amd64"
         },
         {
           "id": "download-linux-arm64",
@@ -27,7 +27,7 @@ metadata:
           "os": ["linux"],
           "bins": ["bx"],
           "label": "Install Brave Search CLI (GitHub)",
-          "url": "https://github.com/brave/brave-search-cli/releases/download/v1.0.0/bx-1.0.0-linux-arm64"
+          "url": "https://github.com/brave/brave-search-cli/releases/download/v1.2.0/bx-1.2.0-linux-arm64"
         },
         {
           "id": "download-darwin-arm64",
@@ -35,7 +35,7 @@ metadata:
           "os": ["darwin"],
           "bins": ["bx"],
           "label": "Install Brave Search CLI (GitHub)",
-          "url": "https://github.com/brave/brave-search-cli/releases/download/v1.0.0/bx-1.0.0-darwin-arm64"
+          "url": "https://github.com/brave/brave-search-cli/releases/download/v1.2.0/bx-1.2.0-darwin-arm64"
         },
         {
           "id": "download-windows-amd64",
@@ -43,7 +43,7 @@ metadata:
           "os": ["win32"],
           "bins": ["bx"],
           "label": "Install Brave Search CLI (GitHub)",
-          "url": "https://github.com/brave/brave-search-cli/releases/download/v1.0.0/bx-1.0.0-windows-amd64.exe"
+          "url": "https://github.com/brave/brave-search-cli/releases/download/v1.2.0/bx-1.2.0-windows-amd64.exe"
         }
       ]
     },
