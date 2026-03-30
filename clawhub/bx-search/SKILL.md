@@ -7,8 +7,7 @@ metadata:
   {
     "openclaw": {
       "requires": {
-        "bins": ["bx"],
-        "env": ["BRAVE_SEARCH_API_KEY"],
+        "bins": ["bx"]
       },
       "primaryEnv": "BRAVE_SEARCH_API_KEY",
       "homepage": "https://brave.com/search/api/",
