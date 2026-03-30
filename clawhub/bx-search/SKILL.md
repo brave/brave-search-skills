@@ -115,6 +115,8 @@ bx answers "explain Rust lifetimes with examples"
 bx web "site:docs.rs axum middleware" --count 5
 ```
 
+> **Note:** Some examples below pipe output through `jq` for illustration. Do not assume `jq` is installed — if you need to filter JSON in a shell pipeline, use whatever is available in your environment (e.g., `jq`, PowerShell's `ConvertFrom-Json`, Python's `json` module), or simply read the raw JSON output directly.
+
 ### When to Use Which Command
 
 | Your need | Command | Why |
