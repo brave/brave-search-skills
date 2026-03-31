@@ -223,7 +223,7 @@ echo '{"messages":[{"role":"user","content":"review this code for security issue
 ```bash
 bx images "system architecture diagram microservices" | jq '.results[].thumbnail.src'
 bx suggest "how to implement" --count 10 | jq '.results[].query'
-bx places --location "San Francisco CA US" -q "coffee" | jq '.results[].title'
+bx places "coffee" --location "San Francisco CA US" | jq '.results[].title'
 bx web "restaurants near me" --lat 37.7749 --long -122.4194 --city "San Francisco"
 bx web "rust" --result-filter "web,discussions"
 ```
