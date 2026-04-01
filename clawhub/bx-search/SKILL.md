@@ -43,6 +43,14 @@ metadata:
           "bins": ["bx"],
           "label": "Install Brave Search CLI (GitHub)",
           "url": "https://github.com/brave/brave-search-cli/releases/download/v1.2.0/bx-1.2.0-windows-amd64.exe"
+        },
+        {
+          "id": "download-windows-arm64",
+          "kind": "download",
+          "os": ["win32"],
+          "bins": ["bx"],
+          "label": "Install Brave Search CLI (GitHub)",
+          "url": "https://github.com/brave/brave-search-cli/releases/download/v1.2.0/bx-1.2.0-windows-arm64.exe"
         }
       ]
     },
