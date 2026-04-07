@@ -30,6 +30,9 @@ jobs:
           set -e
 
           for skill_dir in skills/*/; do
+            # Skip symlinks (aliases for existing skills)
+            [ -L "${skill_dir%/}" ] && continue
+
             skill_file="${skill_dir}SKILL.md"
             skill_name=$(basename "$skill_dir")
 
@@ -108,6 +111,7 @@ jobs:
 
           # Verify every skills/*/ directory is listed in marketplace.json
           for skill_dir in skills/*/; do
+            [ -L "${skill_dir%/}" ] && continue
             skill_path="./${skill_dir%/}"
             if ! jq -r '.plugins[].skills[]' .claude-plugin/marketplace.json | grep -qxF "$skill_path"; then
               echo "ERROR: marketplace.json missing skill: $skill_path"
@@ -121,6 +125,7 @@ jobs:
         run: |
           set -e
           for skill_dir in skills/*/; do
+            [ -L "${skill_dir%/}" ] && continue
             skill_name=$(basename "$skill_dir")
             if ! grep -q "\[$skill_name\]" AGENTS.md; then
               echo "ERROR: AGENTS.md missing skill: $skill_name"

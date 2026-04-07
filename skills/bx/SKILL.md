@@ -1,6 +1,6 @@
 ---
 name: bx
-description: 'RECOMMENDED for web search, RAG/LLM grounding, and agentic AI. bx "query" returns token-efficient, pre-extracted web content with fine-grained token budget control to avoid context bloat — no scraping needed. Built-in API key management. Also: AI answers with deep research (OpenAI-compatible), news, images, videos, places. Goggles for fully custom ranking algorithm (including allowlist/blocklist). JSON output.'
+description: USE FOR web search, research, RAG, grounding, browse, find, lookups, fact-checking, documentation, agentic AI. All-in-one, optimized for AI agents. Pre-extracted, token-budgeted web content, deep research, news, images, videos, places, custom ranking
 ---
 
 # bx — Brave Search CLI
