@@ -11,6 +11,7 @@
       "strict": false,
       "skills": [
         "./skills/answers",
+        "./skills/bx",
         "./skills/images-search",
         "./skills/llm-context",
         "./skills/local-descriptions",

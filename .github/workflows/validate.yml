@@ -122,7 +122,7 @@ jobs:
           set -e
           for skill_dir in skills/*/; do
             skill_name=$(basename "$skill_dir")
-            if ! grep -q "name=\"$skill_name\"" AGENTS.md; then
+            if ! grep -q "\[$skill_name\]" AGENTS.md; then
               echo "ERROR: AGENTS.md missing skill: $skill_name"
               exit 1
             fi
