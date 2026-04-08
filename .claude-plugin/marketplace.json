@@ -7,11 +7,13 @@
     {
       "name": "brave-search-skills",
       "source": "./",
+      "version": "1.4.0",
       "description": "Official Brave Search API skills for AI coding agents",
       "strict": false,
       "skills": [
         "./skills/answers",
         "./skills/bx",
+        "./skills/search",
         "./skills/images-search",
         "./skills/llm-context",
         "./skills/local-descriptions",
