@@ -2,7 +2,7 @@
 
 Official skills for using [Brave Search API](https://api.search.brave.com) with AI coding agents.
 
-Works with **Claude Code**, **Cursor**, **GitHub Copilot**, **Codex**, **Gemini CLI**, **VS Code**, **Windsurf**, **OpenClaw**, **Cline**, **Goose**, **Amp**, **Roo Code**, and [many other agents](https://agentskills.io) that support the Agent Skills standard.
+Works with **Claude Code**, **Cursor**, **GitHub Copilot**, **Codex**, **Gemini CLI**, **Grok Build**, **VS Code**, **Windsurf**, **OpenClaw**, **Cline**, **Goose**, **Amp**, **Roo Code**, and [many other agents](https://agentskills.io) that support the Agent Skills standard.
 
 <div align="center">
 
@@ -65,6 +65,16 @@ export BRAVE_SEARCH_API_KEY="your-key"
 ```
 
 Then restart your terminal. Codex reads environment variables from the shell (CLI, app, and IDE extension).
+
+### Grok Build
+
+**Shell profile** (`~/.zshrc` or `~/.bashrc`):
+
+```bash
+export BRAVE_SEARCH_API_KEY="your-key"
+```
+
+Then restart your terminal or launch Grok Build from a shell that has the variable set. Grok reads `AGENTS.md` and Claude-compatible skills/plugins natively — see [xAI docs](https://docs.x.ai/build/features/skills-plugins-marketplaces).
 
 ### OpenClaw
 
@@ -138,6 +148,33 @@ git clone https://github.com/brave/brave-search-skills
 cp -r brave-search-skills/skills/* ~/.claude/skills/   # user-level
 cp -r brave-search-skills/skills/* .claude/skills/      # project-level
 ```
+
+### Grok Build
+
+[Skills & plugins documentation](https://docs.x.ai/build/features/skills-plugins-marketplaces)
+
+Grok Build is compatible with the Claude Code plugin format. Install all 11 skills as a single plugin:
+
+**Official marketplace** (after listing in [xAI Plugin Marketplace](https://github.com/xai-org/plugin-marketplace)):
+
+```
+/marketplace
+grok plugin install brave-search --trust
+```
+
+**Direct from GitHub** (works today):
+
+```
+grok plugin install brave/brave-search-skills --trust
+```
+
+**curl** (skills only, no plugin bundle):
+
+```bash
+mkdir -p ~/.grok/skills && curl -sL https://github.com/brave/brave-search-skills/archive/main.tar.gz | tar xz -C ~/.grok/skills --strip-components=2 brave-search-skills-main/skills
+```
+
+Set `BRAVE_SEARCH_API_KEY` before use — see [API key setup](docs/api-key-setup.md).
 
 ### Cursor
 
@@ -262,6 +299,8 @@ See [openskills on GitHub](https://github.com/numman-ali/openskills) for details
 
 **Claude Code marketplace**: updates automatically, or run `/plugin marketplace update brave-search`.
 
+**Grok Build marketplace**: updates when the catalog SHA is bumped; reinstall with `grok plugin install brave-search --trust`.
+
 **curl**: re-run the curl command above to overwrite with the latest version.
 
 **git clone**: pull the latest changes and re-copy:
@@ -372,6 +411,7 @@ Learn more: https://search.brave.com/help/goggles
 - **Cursor Skills**: https://cursor.com/docs/context/skills
 - **Codex Skills**: https://developers.openai.com/codex/skills
 - **OpenClaw Skills**: https://docs.openclaw.ai/tools/skills
+- **Grok Build Skills & Plugins**: https://docs.x.ai/build/features/skills-plugins-marketplaces
 
 ## License
 
