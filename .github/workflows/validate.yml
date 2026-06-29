@@ -121,6 +121,49 @@ jobs:
 
           echo ".claude-plugin/marketplace.json is valid"
 
+      - name: Check plugin.json consistency
+        run: |
+          set -e
+
+          if [ ! -f .claude-plugin/plugin.json ]; then
+            echo "ERROR: Missing .claude-plugin/plugin.json"
+            exit 1
+          fi
+
+          if ! jq . .claude-plugin/plugin.json > /dev/null 2>&1; then
+            echo "ERROR: .claude-plugin/plugin.json is not valid JSON"
+            exit 1
+          fi
+
+          for field in name description version; do
+            if [ "$(jq -r ".$field" .claude-plugin/plugin.json)" = "null" ]; then
+              echo "ERROR: .claude-plugin/plugin.json missing $field"
+              exit 1
+            fi
+          done
+
+          for skill_dir in skills/*/; do
+            [ -L "${skill_dir%/}" ] && continue
+            skill_path="./${skill_dir%/}"
+            if ! jq -r '.skills[]' .claude-plugin/plugin.json | grep -qxF "$skill_path"; then
+              echo "ERROR: plugin.json missing skill: $skill_path"
+              exit 1
+            fi
+          done
+
+          marketplace_skills=$(jq -r '.plugins[].skills[]' .claude-plugin/marketplace.json | sort)
+          plugin_skills=$(jq -r '.skills[]' .claude-plugin/plugin.json | sort)
+          if [ "$marketplace_skills" != "$plugin_skills" ]; then
+            echo "ERROR: plugin.json and marketplace.json skill lists differ"
+            echo "marketplace.json:"
+            echo "$marketplace_skills"
+            echo "plugin.json:"
+            echo "$plugin_skills"
+            exit 1
+          fi
+
+          echo ".claude-plugin/plugin.json is valid"
+
       - name: Verify AGENTS.md lists all skills
         run: |
           set -e
