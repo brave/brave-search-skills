@@ -1,0 +1,19 @@
+{
+  "name": "brave-search",
+  "description": "Official Brave Search API skills for AI coding agents — web search, RAG grounding, news, images, videos, local POI, and AI answers.",
+  "version": "1.4.0",
+  "author": { "name": "Brave Software" },
+  "skills": [
+    "./skills/answers",
+    "./skills/bx",
+    "./skills/images-search",
+    "./skills/llm-context",
+    "./skills/local-descriptions",
+    "./skills/local-pois",
+    "./skills/news-search",
+    "./skills/spellcheck",
+    "./skills/suggest",
+    "./skills/videos-search",
+    "./skills/web-search"
+  ]
+}
