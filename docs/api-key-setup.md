@@ -81,7 +81,7 @@ export BRAVE_SEARCH_API_KEY="your-api-key-here"
 export BRAVE_SEARCH_API_KEY="your-api-key-here"
 ```
 
-Launch Grok Build from a terminal where the variable is set. For plugin install, see [README](../README.md#grok-build).
+Launch Grok Build from a terminal where the variable is set. For plugin install, see [README](../README.md#grok-build--installation).
 
 ### OpenClaw
 

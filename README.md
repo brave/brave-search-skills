@@ -66,7 +66,7 @@ export BRAVE_SEARCH_API_KEY="your-key"
 
 Then restart your terminal. Codex reads environment variables from the shell (CLI, app, and IDE extension).
 
-### Grok Build
+### Grok Build — API key
 
 **Shell profile** (`~/.zshrc` or `~/.bashrc`):
 
@@ -149,7 +149,7 @@ cp -r brave-search-skills/skills/* ~/.claude/skills/   # user-level
 cp -r brave-search-skills/skills/* .claude/skills/      # project-level
 ```
 
-### Grok Build
+### Grok Build — Installation
 
 [Skills & plugins documentation](https://docs.x.ai/build/features/skills-plugins-marketplaces)
 
