@@ -6,6 +6,7 @@
   "skills": [
     "./skills/answers",
     "./skills/bx",
+    "./skills/search",
     "./skills/images-search",
     "./skills/llm-context",
     "./skills/local-descriptions",
