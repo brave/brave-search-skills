@@ -1,6 +1,6 @@
 ---
 name: news-search
-description: USE FOR news search. Returns news articles with title, URL, description, age, thumbnail. Supports freshness and date range filtering, SafeSearch filter and Goggles for custom ranking.
+description: USE FOR news search. Returns news articles with title, URL, description, age, thumbnail, profile. Supports freshness and date range filtering, SafeSearch filter and Goggles for custom ranking.
 ---
 
 # News Search
@@ -103,6 +103,10 @@ POST https://api.search.brave.com/res/v1/news/search
         "favicon": "https://imgs.search.brave.com/favicon/news.example.com",
         "path": "/space-exploration"
       },
+      "profile": {
+        "name": "Example Outlet",
+        "url": "https://news.example.com/space-exploration"
+      },
       "thumbnail": {
         "src": "https://imgs.search.brave.com/..."
       }
@@ -141,6 +145,10 @@ POST https://api.search.brave.com/res/v1/news/search
 | `results[].thumbnail.src` | string | Served thumbnail URL |
 | `results[].thumbnail.original` | string? | Original thumbnail URL |
 | `results[].extra_snippets` | list[str]? | Up to 5 additional excerpts per result |
+| `results[].profile.name` | string? | Name of the site |
+| `results[].profile.url` | string? | The original URL where the profile is available |
+| `results[].profile.long_name` | string? | The long name of the site |
+| `results[].profile.img` | string? | The served image URL representing the profile |
 
 ## Goggles (Custom Ranking) — Unique to Brave
 
@@ -153,7 +161,7 @@ Goggles let you **re-rank news results** — boost trusted outlets or suppress u
 
 > **Hosted** goggles must be on GitHub/GitLab, include `! name:`, `! description:`, `! author:` headers, and be registered at https://search.brave.com/goggles/create. **Inline** rules need no registration.
 
-**Syntax**: `$boost=N` / `$downrank=N` (1–10), `$discard`, `$site=example.com`. Combine with commas: `$site=example.com,boost=3`. Separate rules with `\n` (`%0A`).
+**Syntax**: Rules start with `$` + comma-separated options. **Actions** (pick one): `discard`, `boost[=N]`, `downrank[=N]` — N is an integer 1–10. **Site filter**: `site=DOMAIN`. Example: `$site=example.com,boost=3`. Separate rules with `\n` (`%0A`).
 
 **Allow list**: `$discard\n$site=docs.python.org\n$site=developer.mozilla.org` — **Block list**: `$discard,site=pinterest.com\n$discard,site=quora.com`
 

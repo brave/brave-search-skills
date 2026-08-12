@@ -1,6 +1,6 @@
 ---
 name: local-pois
-description: USE FOR getting local business/POI details. Requires POI IDs obtained from web-search (with result_filter=locations). Returns full business information including ratings, hours, contact info. Max 20 IDs.
+description: USE FOR getting local business/POI details. Requires POI IDs from local-place-search, or from web-search with result_filter=locations. Returns full business information including ratings, hours, contact info. Max 20 IDs.
 ---
 
 # Local POIs (Search API)
@@ -9,9 +9,9 @@ description: USE FOR getting local business/POI details. Requires POI IDs obtain
 >
 > **Plan**: Included in the **Search** plan. See https://api-dashboard.search.brave.com/app/subscriptions/subscribe
 >
-> **Two-step flow**: This endpoint requires POI IDs from a prior web search.
+> **Two-step flow**: This endpoint requires POI IDs from a prior search.
 >
-> 1. Call `web-search` with `result_filter=locations` to get POI IDs from `locations.results[].id`
+> 1. Get POI IDs from `local-place-search`, or from `web-search` with `result_filter=locations` (`locations.results[].id`)
 > 2. Pass those IDs to this endpoint to get full business details
 
 ## Quick Start (cURL)
@@ -161,7 +161,7 @@ The response has `type: "local_pois"` and a `results` array of `LocationResult` 
 
 ## Getting POI IDs
 
-POI IDs come from the **Web Search API** (`web-search`) with `result_filter=locations`:
+`local-place-search` returns POI IDs directly. They also come from the **Web Search API** (`web-search`) with `result_filter=locations`:
 
 ```bash
 # 1. Search for local businesses

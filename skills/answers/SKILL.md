@@ -30,7 +30,6 @@ curl -X POST "https://api.search.brave.com/res/v1/chat/completions" \
   -H "X-Subscription-Token: ${BRAVE_SEARCH_API_KEY}" \
   -d '{
     "messages": [{"role": "user", "content": "How does the James Webb Space Telescope work?"}],
-    "model": "brave",
     "stream": false
   }'
 ```
@@ -42,7 +41,6 @@ curl -X POST "https://api.search.brave.com/res/v1/chat/completions" \
   -H "X-Subscription-Token: ${BRAVE_SEARCH_API_KEY}" \
   -d '{
     "messages": [{"role": "user", "content": "What are recent breakthroughs in fusion energy?"}],
-    "model": "brave",
     "stream": true,
     "enable_citations": true
   }'
@@ -55,7 +53,6 @@ curl -X POST "https://api.search.brave.com/res/v1/chat/completions" \
   -H "X-Subscription-Token: ${BRAVE_SEARCH_API_KEY}" \
   -d '{
     "messages": [{"role": "user", "content": "Compare quantum computing approaches"}],
-    "model": "brave",
     "stream": true,
     "enable_research": true,
     "research_maximum_number_of_iterations": 3,
@@ -91,7 +88,6 @@ POST https://api.search.brave.com/res/v1/chat/completions
 | Parameter | Type | Required | Default | Description |
 |--|--|--|--|--|
 | `messages` | array | **Yes** | - | Single user message (exactly 1 message) |
-| `model` | string | **Yes** | - | Use `"brave"` |
 | `stream` | bool | No | true | Enable SSE streaming |
 | `country` | string | No | "US" | Search country (2-letter country code or `ALL`) |
 | `language` | string | No | "en" | Response language |

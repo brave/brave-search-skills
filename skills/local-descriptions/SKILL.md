@@ -1,6 +1,6 @@
 ---
 name: local-descriptions
-description: USE FOR getting AI-generated POI text descriptions. Requires POI IDs obtained from web-search (with result_filter=locations). Returns markdown descriptions grounded in web search context. Max 20 IDs per request.
+description: USE FOR getting AI-generated POI text descriptions. Requires POI IDs from local-place-search, or from web-search with result_filter=locations. Returns markdown descriptions grounded in web search context. Max 20 IDs per request.
 ---
 
 # Local Descriptions (Search API)
@@ -9,9 +9,9 @@ description: USE FOR getting AI-generated POI text descriptions. Requires POI ID
 >
 > **Plan**: Included in the **Search** plan. See https://api-dashboard.search.brave.com/app/subscriptions/subscribe
 >
-> **Two-step flow**: This endpoint requires POI IDs from a prior web search.
+> **Two-step flow**: This endpoint requires POI IDs from a prior search.
 >
-> 1. Call `web-search` with `result_filter=locations` to get POI IDs from `locations.results[].id`
+> 1. Get POI IDs from `local-place-search`, or from `web-search` with `result_filter=locations` (`locations.results[].id`)
 > 2. Pass those IDs to this endpoint to get AI-generated descriptions
 
 ## Quick Start (cURL)
@@ -80,7 +80,7 @@ GET https://api.search.brave.com/res/v1/local/descriptions
 
 ## Getting POI IDs
 
-POI IDs come from the **Web Search API** (`web-search`) with `result_filter=locations`:
+`local-place-search` returns POI IDs directly. They also come from the **Web Search API** (`web-search`) with `result_filter=locations`:
 
 ```bash
 # 1. Search for local businesses
