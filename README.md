@@ -2,7 +2,7 @@
 
 Official skills for using [Brave Search API](https://api.search.brave.com) with AI coding agents.
 
-Works with **Claude Code**, **Cursor**, **GitHub Copilot**, **Codex**, **Gemini CLI**, **VS Code**, **Windsurf**, **OpenClaw**, **Cline**, **Goose**, **Amp**, **Roo Code**, and [many other agents](https://agentskills.io) that support the Agent Skills standard.
+Works with **Claude Code**, **Cursor**, **GitHub Copilot**, **Codex**, **Grok Build**, **Gemini CLI**, **VS Code**, **Windsurf**, **OpenClaw**, **Cline**, **Goose**, **Amp**, **Roo Code**, and [many other agents](https://agentskills.io) that support the Agent Skills standard.
 
 <div align="center">
 
@@ -89,6 +89,24 @@ Or add to `~/.openclaw/openclaw.json` under the skill's config:
   }
 }
 ```
+
+### Grok Build
+
+**Option 1 — direnv** (directory-scoped, auto-loads/unloads):
+
+```bash
+# Install direnv (https://direnv.net), then in your project directory:
+echo 'export BRAVE_SEARCH_API_KEY="your-key"' >> .envrc
+direnv allow
+```
+
+**Option 2 — Shell profile** (`~/.zshrc` or `~/.bashrc`):
+
+```bash
+export BRAVE_SEARCH_API_KEY="your-key"
+```
+
+Then restart your terminal. Grok Build inherits environment variables from your shell.
 
 ### Other agents
 
@@ -240,6 +258,41 @@ mkdir -p ~/.openclaw/skills && curl -sL https://github.com/brave/brave-search-sk
 cp -r brave-search-skills/skills/* ~/.openclaw/skills/
 ```
 
+### Grok Build
+
+[Skills documentation](https://docs.x.ai/build/features/skills-plugins-marketplaces)
+
+Grok Build automatically reads Claude Code's marketplaces, plugins, `.claude/skills/`, and instruction files, plus this repo's `AGENTS.md`, with **zero configuration**. If you've already installed these skills for Claude Code (via the plugin marketplace above) or for Codex (via `.agents/skills/`), Grok Build picks them up too — no extra step needed.
+
+Install the `bx` CLI itself before starting a session, rather than relying on a skill to install it mid-task:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/brave/brave-search-cli/main/scripts/install.sh | sh
+```
+
+To install the skills natively for Grok Build:
+
+**curl:**
+
+```bash
+# User-level
+mkdir -p ~/.grok/skills && curl -sL https://github.com/brave/brave-search-skills/archive/main.tar.gz | tar xz -C ~/.grok/skills --strip-components=2 brave-search-skills-main/skills
+
+# Project-level
+mkdir -p .grok/skills && curl -sL https://github.com/brave/brave-search-skills/archive/main.tar.gz | tar xz -C .grok/skills --strip-components=2 brave-search-skills-main/skills
+```
+
+**Manual** (cp — requires git clone above):
+
+```bash
+cp -r brave-search-skills/skills/* ~/.grok/skills/    # user-level
+cp -r brave-search-skills/skills/* .grok/skills/       # project-level
+```
+
+Grok Build reads skills from `.grok/skills/` (walked up to the repo root) and `~/.grok/skills/`.
+
+> **Note:** Grok Build may still prefer its own built-in web search over `bx` by default, even once both are installed. To make sure it uses `bx`, ask for it explicitly (e.g. "use the bx skill") or disable the built-in tool with `grok --disable-web-search`.
+
 ### Other Agents (Cline, Gemini CLI, Goose, Amp, Roo Code, etc.)
 
 **curl** (adjust the target directory for your agent):
@@ -271,6 +324,7 @@ cd brave-search-skills && git pull
 cp -r skills/* ~/.claude/skills/    # Claude Code
 cp -r skills/* .cursor/skills/      # Cursor
 cp -r skills/* .agents/skills/      # Codex
+cp -r skills/* .grok/skills/        # Grok Build
 cp -r skills/* ~/.openclaw/skills/  # OpenClaw
 ```
 
@@ -371,6 +425,7 @@ Learn more: https://search.brave.com/help/goggles
 - **Claude Code Skills**: https://code.claude.com/docs/en/skills
 - **Cursor Skills**: https://cursor.com/docs/context/skills
 - **Codex Skills**: https://developers.openai.com/codex/skills
+- **Grok Build Skills**: https://docs.x.ai/build/features/skills-plugins-marketplaces
 - **OpenClaw Skills**: https://docs.openclaw.ai/tools/skills
 
 ## License
