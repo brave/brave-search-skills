@@ -167,7 +167,7 @@ Set `operators=false` to disable operator parsing.
 
 ## Use Cases
 
-- **Video content research**: Find tutorials, explainers, and reviews by topic. Use the `video.duration`, `video.views`, and `video.creator` metadata to filter and rank results programmatically. Prefer videos-search over web-search when you need a dedicated video index with richer metadata (duration, views, creator, tags) and up to 50 results per request.
+- **Video content research**: Find tutorials, explainers, and reviews by topic. Use the `video.duration`, `video.views`, and `video.creator` metadata to filter and rank results programmatically. Prefer `videos-search` over `web-search` when you need a dedicated video index with richer metadata (duration, views, creator, tags) and up to 50 results per request.
 - **Fresh video monitoring**: Use `freshness=pd` or `freshness=pw` to track newly published video content on trending topics or specific subjects.
 - **Platform-specific search**: Use `site:youtube.com` or `site:vimeo.com` operators to target specific video platforms.
 - **Video metadata extraction**: Get view counts, durations, creator info, and tags for analytics, content curation, or recommendation systems.

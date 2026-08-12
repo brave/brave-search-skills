@@ -282,12 +282,14 @@ See the full list of compatible agents at [agentskills.io](https://agentskills.i
 
 | Skill | Description | Endpoint | Best For |
 |-------|-------------|----------|----------|
+| **[bx](skills/bx/SKILL.md)** | All-in-one CLI over the endpoints below, with token-budgeted output | CLI | Agents and shell workflows — **recommended** |
 | **[llm-context](skills/llm-context/SKILL.md)** | Pre-extracted web content for LLM grounding (GET/POST) | `/res/v1/llm/context` | RAG, AI agents — **recommended** |
 | **[answers](skills/answers/SKILL.md)** | AI-grounded answers, OpenAI SDK compatible | `/res/v1/chat/completions` | Chat interfaces, cited answers |
 | **[web-search](skills/web-search/SKILL.md)** | Ranked web results with snippets and rich data | `/res/v1/web/search` | General search queries |
 | **[images-search](skills/images-search/SKILL.md)** | Image search with thumbnails (up to 200 results) | `/res/v1/images/search` | Finding images |
 | **[news-search](skills/news-search/SKILL.md)** | News articles with freshness filtering | `/res/v1/news/search` | Current events, breaking news |
 | **[videos-search](skills/videos-search/SKILL.md)** | Video search with duration/views/creator | `/res/v1/videos/search` | Finding video content |
+| **[local-place-search](skills/local-place-search/SKILL.md)** | Standalone place/POI search by coordinates or location string | `/res/v1/local/place_search` | Maps, "nearby", travel planning |
 | **[local-pois](skills/local-pois/SKILL.md)** | Local business/POI details (ratings, hours, contact) | `/res/v1/local/pois` | Business info from POI IDs |
 | **[local-descriptions](skills/local-descriptions/SKILL.md)** | AI-generated POI text descriptions | `/res/v1/local/descriptions` | POI summaries from POI IDs |
 | **[suggest](skills/suggest/SKILL.md)** | Query autocomplete (<100ms response) | `/res/v1/suggest/search` | Search UX, query expansion |
@@ -326,7 +328,6 @@ curl -X POST "https://api.search.brave.com/res/v1/chat/completions" \
   -H "X-Subscription-Token: ${BRAVE_SEARCH_API_KEY}" \
   -d '{
     "messages": [{"role": "user", "content": "What programming languages are trending in 2026?"}],
-    "model": "brave",
     "stream": false
   }'
 ```
@@ -339,7 +340,6 @@ curl -X POST "https://api.search.brave.com/res/v1/chat/completions" \
   -H "X-Subscription-Token: ${BRAVE_SEARCH_API_KEY}" \
   -d '{
     "messages": [{"role": "user", "content": "How are developers building AI-powered search applications in 2026?"}],
-    "model": "brave",
     "stream": true,
     "enable_research": true
   }'

@@ -7,7 +7,7 @@
     {
       "name": "brave-search-skills",
       "source": "./",
-      "version": "1.4.0",
+      "version": "1.5.0",
       "description": "Official Brave Search API skills for AI coding agents",
       "strict": false,
       "skills": [
@@ -22,7 +22,8 @@
         "./skills/spellcheck",
         "./skills/suggest",
         "./skills/videos-search",
-        "./skills/web-search"
+        "./skills/web-search",
+        "./skills/local-place-search"
       ]
     }
   ]

@@ -76,6 +76,8 @@ $site=rust-lang.org'
 | `country` | string | No | `US` | Search country (2-letter country code or `ALL`) |
 | `search_lang` | string | No | `en` | Language preference (2+ char language code) |
 | `count` | int | No | `20` | Max search results to consider (1-50) |
+| `spellcheck` | bool | No | `true` | Whether to spellcheck the query before searching |
+| `freshness` | string | No | `""` | Filters search results by page age. The age of a page is determined by the most relevant date reported by the content, such as its published or last modified date. Supported values: `pd` (24h or less), `pw` (7 days or less), `pm` (31 days or less), `py` (365 days or less), or a custom date range `YYYY-MM-DDtoYYYY-MM-DD` (e.g. `2022-04-01to2022-07-30`). |
 
 ### Context Size Parameters
 
@@ -83,17 +85,20 @@ $site=rust-lang.org'
 |--|--|--|--|--|
 | `maximum_number_of_urls` | int | No | `20` | Max URLs in response (1-50) |
 | `maximum_number_of_tokens` | int | No | `8192` | Approximate max tokens in context (1024-32768) |
-| `maximum_number_of_snippets` | int | No | `50` | Max snippets across all URLs (1-100) |
+| `maximum_number_of_snippets` | int | No | `50` | Max snippets across all URLs (1-256) |
 | `maximum_number_of_tokens_per_url` | int | No | `4096` | Max tokens per individual URL (512-8192) |
 | `maximum_number_of_snippets_per_url` | int | No | `50` | Max snippets per individual URL (1-100) |
+
 
 ### Filtering & Local Parameters
 
 | Parameter | Type | Required | Default | Description |
 |--|--|--|--|--|
-| `context_threshold_mode` | string | No | `balanced` | Relevance threshold for including content (`strict`/`balanced`/`lenient`) |
+| `context_threshold_mode` | string | No | `null` | Relevance threshold for including content (`strict`/`balanced`/`lenient`/`disabled`) |
+| `safesearch` | string | No | `null` | Adult content filter (`off`/`moderate`/`strict`); not set means no filtering, except local recall which stays `strict` |
 | `enable_local` | bool | No | `null` | Local recall control (`true`/`false`/`null`, see below) |
 | `goggles` | string/list | No | `null` | Goggle URL or inline definition for custom re-ranking |
+| `enable_source_metadata` | bool | No | `false` | Adds `site_name`, `favicon`, `thumbnail` and `description` to each `sources[url]` entry |
 
 ## Context Size Guidelines
 
@@ -109,9 +114,11 @@ Larger context windows provide more information but increase latency and cost (o
 
 | Mode | Behavior |
 |--|--|
+| `null` (not set) | **Default** — resolves to `lenient` on the current API version |
 | `strict` | Higher threshold — fewer but more relevant results |
-| `balanced` | Default — good balance between coverage and relevance |
+| `balanced` | Good balance between coverage and relevance |
 | `lenient` | Lower threshold — more results, may include less relevant content |
+| `disabled` | No threshold filtering — return all extracted content |
 
 ## Local Recall
 
@@ -170,7 +177,7 @@ Goggles let you **control which sources ground your LLM** — essential for RAG 
 |--|--|
 | Official docs only | `$discard\n$site=docs.python.org` |
 | Exclude user content | `$discard,site=reddit.com\n$discard,site=stackoverflow.com` |
-| Academic sources | `$discard\n$site=arxiv.org\n$site=.edu` |
+| Academic sources | `$discard\n$site=arxiv.org\n$site=scholar.google.com` |
 | No paywalls | `$discard,site=medium.com` |
 
 | Method | Example |
@@ -180,7 +187,7 @@ Goggles let you **control which sources ground your LLM** — essential for RAG 
 
 > **Hosted** goggles must be on GitHub/GitLab, include `! name:`, `! description:`, `! author:` headers, and be registered at https://search.brave.com/goggles/create. **Inline** rules need no registration.
 
-**Syntax**: `$boost=N` / `$downrank=N` (1–10), `$discard`, `$site=example.com`. Combine with commas: `$site=example.com,boost=3`. Separate rules with `\n` (`%0A`).
+**Syntax**: Rules start with `$` + comma-separated options. **Actions** (pick one): `discard`, `boost[=N]`, `downrank[=N]` — N is an integer 1–10. **Site filter**: `site=DOMAIN`. Example: `$site=example.com,boost=3`. Separate rules with `\n` (`%0A`).
 
 **Allow list**: `$discard\n$site=docs.python.org\n$site=developer.mozilla.org` — **Block list**: `$discard,site=pinterest.com\n$discard,site=quora.com`
 
@@ -209,7 +216,7 @@ Goggles let you **control which sources ground your LLM** — essential for RAG 
     "https://example.com/page": {
       "title": "Page Title",
       "hostname": "example.com",
-      "age": ["Wednesday, January 15, 2025", "2025-01-15", "392 days ago"]
+      "age": ["Wednesday, January 15, 2025", "2025-01-15", "392 days ago", "2025-01-15T13:45:02Z"]
     }
   }
 }
@@ -240,7 +247,7 @@ Goggles let you **control which sources ground your LLM** — essential for RAG 
     "https://business.com": {
       "title": "Business Name",
       "hostname": "business.com",
-      "age": null
+      "age": []
     }
   }
 }
@@ -268,7 +275,12 @@ Goggles let you **control which sources ground your LLM** — essential for RAG 
 | `sources` | object | Metadata for all referenced URLs, keyed by URL |
 | `sources[url].title` | string | Page title |
 | `sources[url].hostname` | string | Source hostname |
-| `sources[url].age` | array/null | Page modification dates (when available) |
+| `sources[url].age` | array | The page's date in four fixed positions: full date, `YYYY-MM-DD`, relative age, ISO 8601 timestamp. Empty when the page has no known date |
+| `sources[url].description` | string | The page's own description, independent of the query. Requires `enable_source_metadata` |
+| `sources[url].site_name` | string | Site name. Requires `enable_source_metadata` |
+| `sources[url].favicon` | string | Favicon URL. Requires `enable_source_metadata` |
+| `sources[url].thumbnail` | object/null | Page thumbnail (`src`, `original`). Requires `enable_source_metadata` |
+| `sources[url].snippet` | string? | Best snippet for the page |
 
 **Note**: Snippets may contain plain text OR JSON-serialized structured data (tables, schemas, code blocks). LLMs handle this mixed format well.
 
