@@ -25,7 +25,7 @@ Add to `~/.claude/settings.json` ([docs](https://code.claude.com/docs/en/setting
 
 For per-project use, add to `.claude/settings.local.json` (gitignored) with the same format.
 
-### Cursor / Windsurf / Cline
+### Cursor / Windsurf / Cline / Grok Build
 
 **Option 1 — direnv** (directory-scoped, auto-loads/unloads):
 
