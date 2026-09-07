@@ -148,4 +148,5 @@ If you see a result title, your key is working.
 ### "Option Not in Plan" Error
 
 - The endpoint you're calling requires a higher tier plan
+- API keys are **plan-scoped**: a Search-plan key is rejected by Answers-plan endpoints (and vice versa) with this error. If you subscribe to both plans, set `BRAVE_SEARCH_API_KEY` to your Search-plan key and `BRAVE_ANSWERS_API_KEY` to your Answers-plan key — the `answers` skill reads the latter
 - Check which features are included in your plan at https://api.search.brave.com

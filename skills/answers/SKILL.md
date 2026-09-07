@@ -9,6 +9,8 @@ description: "USE FOR AI-grounded answers via OpenAI-compatible /chat/completion
 >
 > **Plan**: Included in the **Answers** plan. See https://api-dashboard.search.brave.com/app/subscriptions/subscribe
 
+> **Key is plan-scoped**: an Answers-plan key is rejected by Search-plan endpoints and vice versa (`400 OPTION_NOT_IN_PLAN`). Set `BRAVE_ANSWERS_API_KEY` to your Answers-plan key for the commands below; `BRAVE_SEARCH_API_KEY` is not used by this skill.
+
 ## When to Use
 
 | Use Case | Skill | Why |
@@ -27,7 +29,7 @@ description: "USE FOR AI-grounded answers via OpenAI-compatible /chat/completion
 ```bash
 curl -X POST "https://api.search.brave.com/res/v1/chat/completions" \
   -H "Content-Type: application/json" \
-  -H "X-Subscription-Token: ${BRAVE_SEARCH_API_KEY}" \
+  -H "X-Subscription-Token: ${BRAVE_ANSWERS_API_KEY}" \
   -d '{
     "messages": [{"role": "user", "content": "How does the James Webb Space Telescope work?"}],
     "stream": false
@@ -38,7 +40,7 @@ curl -X POST "https://api.search.brave.com/res/v1/chat/completions" \
 ```bash
 curl -X POST "https://api.search.brave.com/res/v1/chat/completions" \
   -H "Content-Type: application/json" \
-  -H "X-Subscription-Token: ${BRAVE_SEARCH_API_KEY}" \
+  -H "X-Subscription-Token: ${BRAVE_ANSWERS_API_KEY}" \
   -d '{
     "messages": [{"role": "user", "content": "What are recent breakthroughs in fusion energy?"}],
     "stream": true,
@@ -50,7 +52,7 @@ curl -X POST "https://api.search.brave.com/res/v1/chat/completions" \
 ```bash
 curl -X POST "https://api.search.brave.com/res/v1/chat/completions" \
   -H "Content-Type: application/json" \
-  -H "X-Subscription-Token: ${BRAVE_SEARCH_API_KEY}" \
+  -H "X-Subscription-Token: ${BRAVE_ANSWERS_API_KEY}" \
   -d '{
     "messages": [{"role": "user", "content": "Compare quantum computing approaches"}],
     "stream": true,
@@ -124,7 +126,7 @@ from openai import OpenAI
 
 client = OpenAI(
     base_url="https://api.search.brave.com/res/v1",
-    api_key="your-brave-api-key",
+    api_key="your-answers-plan-key",  # Answers-plan key — Search-plan keys get OPTION_NOT_IN_PLAN
 )
 
 response = client.chat.completions.create(
@@ -141,7 +143,7 @@ from openai import OpenAI
 
 client = OpenAI(
     base_url="https://api.search.brave.com/res/v1",
-    api_key="your-brave-api-key",
+    api_key="your-answers-plan-key",  # Answers-plan key — Search-plan keys get OPTION_NOT_IN_PLAN
 )
 
 stream = client.chat.completions.create(
@@ -162,7 +164,7 @@ from openai import AsyncOpenAI
 
 client = AsyncOpenAI(
     base_url="https://api.search.brave.com/res/v1",
-    api_key="your-brave-api-key",
+    api_key="your-answers-plan-key",  # Answers-plan key — Search-plan keys get OPTION_NOT_IN_PLAN
 )
 
 stream = await client.chat.completions.create(
